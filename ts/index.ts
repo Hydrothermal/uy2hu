@@ -87,21 +87,6 @@ function spawn(x: number) {
             acceleration: -20,
         })
     );
-
-    // const spawner = new BulletSpawner([
-    //     {
-    //         waves: Infinity,
-    //         interval: 2000,
-    //         pattern: {
-    //             startAngle: -8,
-    //             endAngle: 8,
-    //             rays: 4,
-    //             waves: 5,
-    //             interval: 200,
-    //             bullets: [{ angle: 0, size: 8, speed: 1 }],
-    //         },
-    //     },
-    // ]);
 }
 
 spawn(250);

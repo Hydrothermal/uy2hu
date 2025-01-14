@@ -32,7 +32,7 @@ export class Motion {
     }
 
     apply(dt: number, entity: Entity) {
-        this.angle += this.rotation * dt;
+        this.angle += this.rotation * 0.01 * dt;
 
         this.speed += (this.acceleration / SPEED_FACTOR) * dt;
         this.speed = Math.max(this.speed, this.minspeed);
