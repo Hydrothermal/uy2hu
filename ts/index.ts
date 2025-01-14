@@ -1,10 +1,15 @@
-import { Enemy } from "./entities/enemy.js";
+import { Enemy, EnemyTemplate } from "./entities/enemy.js";
 import { Entity } from "./entities/entity.js";
 import { Player } from "./entities/player.js";
 import { Motion } from "./motion.js";
 import { canvas } from "./interface.js";
 import { game_time, setGameTime, Timer } from "./timer.js";
-import { Bullet, BulletSpawner, BulletTemplate } from "./entities/bullet.js";
+import {
+    Bullet,
+    BulletSpawnerTemplate,
+    BulletTemplate,
+} from "./entities/bullet.js";
+import * as patterns from "./content/bullet_patterns.js";
 
 const ctx = canvas.getContext("2d")!;
 
@@ -54,8 +59,25 @@ function main(ts: number) {
 
 requestAnimationFrame(main);
 
+const et = new EnemyTemplate({
+    hp: 300,
+    bullets: {
+        template: new BulletTemplate({ color: "#00a", size: 8 }),
+        spawner: new BulletSpawnerTemplate([
+            {
+                waves: Infinity,
+                interval: 2000,
+                targeted: true,
+                speed: 200,
+                patterns: [patterns.chain_shot],
+            },
+        ]),
+    },
+});
+
 function spawn(x: number) {
     const e = new Enemy(
+        et,
         x,
         -30,
         20,
@@ -65,24 +87,6 @@ function spawn(x: number) {
             acceleration: -20,
         })
     );
-
-    const spawner = new BulletSpawner([
-        {
-            waves: Infinity,
-            interval: 2000,
-            targeted: true,
-            pattern: {
-                rays: 1,
-                bullets: [
-                    { angle: 0, size: 8, speed: 1.0 },
-                    { angle: 0, size: 8, speed: 1.1 },
-                    { angle: 0, size: 8, speed: 1.2 },
-                    { angle: 0, size: 8, speed: 1.3 },
-                    { angle: 0, size: 8, speed: 1.4 },
-                ],
-            },
-        },
-    ]);
 
     // const spawner = new BulletSpawner([
     //     {
@@ -98,43 +102,40 @@ function spawn(x: number) {
     //         },
     //     },
     // ]);
-
-    const template = new BulletTemplate("#00a", 1);
-
-    new Timer(1000, () => {
-        spawner.spawn(template, e, 90, 150);
-    });
 }
 
 spawn(250);
 
 const player = (Entity.player = new Player());
 
-const spawner = new BulletSpawner([
+const spawner = new BulletSpawnerTemplate([
     {
-        startAngle: -10,
-        endAngle: 10,
-        rays: 4,
-        bullets: [{ angle: 0, size: 2, speed: 1 }],
-    },
-    {
-        startAngle: 0,
-        endAngle: 0,
-        rays: 1,
-        bullets: [
-            { angle: 0, size: 2, speed: 1, offset: -4 },
-            { angle: 0, size: 2, speed: 1, offset: +4 },
+        waves: Infinity,
+        interval: 50,
+        speed: 500,
+        patterns: [
+            {
+                startAngle: -10,
+                endAngle: 10,
+                rays: 4,
+                bullets: [{ angle: 0, size: 2 }],
+            },
+            {
+                bullets: [
+                    { angle: 0, size: 2, offset: -4 },
+                    { angle: 0, size: 2, offset: +4 },
+                ],
+            },
         ],
     },
 ]);
 
-const template = new BulletTemplate("#6f6", 0.8);
-template.source = "player";
+const player_bullet = new BulletTemplate({
+    color: "#6f6",
+    opacity: 0.8,
+    size: 1,
+    layer: 19,
+});
+player_bullet.source = "player";
 
-const timer = new Timer(
-    50,
-    (drift: number) => {
-        spawner.spawn(template, player, 270, 500, drift);
-    },
-    true
-);
+spawner.spawn(player_bullet, player, 270);

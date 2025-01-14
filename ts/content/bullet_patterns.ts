@@ -1,19 +1,14 @@
 import { SpawnPattern } from "../entities/bullet.js";
 
-const chain_shot: SpawnPattern = {
-    waves: Infinity,
-    interval: 2000,
-    targeted: true,
-    pattern: {
-        rays: 1,
-        bullets: [
-            { angle: 0, size: 8, speed: 1.0 },
-            { angle: 0, size: 8, speed: 1.1 },
-            { angle: 0, size: 8, speed: 1.2 },
-            { angle: 0, size: 8, speed: 1.3 },
-            { angle: 0, size: 8, speed: 1.4 },
-        ],
-    },
+export const chain_shot: SpawnPattern = {
+    rays: 1,
+    bullets: [
+        { angle: 0, speed: 1.0 },
+        { angle: 0, speed: 1.1 },
+        { angle: 0, speed: 1.2 },
+        { angle: 0, speed: 1.3 },
+        { angle: 0, speed: 1.4 },
+    ],
 };
 
 const triangle_spread: SpawnPattern = {

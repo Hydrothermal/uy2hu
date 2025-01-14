@@ -1,25 +1,36 @@
 import { Motion } from "../motion.js";
 import { Timer } from "../timer.js";
-import { Angle, angleTo, Point } from "../util.js";
+import { Angle, angleTo, Point, Props } from "../util.js";
 import { Entity } from "./entity.js";
 
 export class BulletTemplate {
     public source: "enemy" | "player" = "enemy";
-    constructor(public color: string, public opacity = 1) {}
+    public color = "#fff";
+    public opacity = 1;
+    public size = 5;
+    public layer?: number;
+
+    constructor(options: Partial<Props<BulletTemplate>>) {
+        Object.assign(this, options);
+    }
 }
 
 export class Bullet extends Entity {
     public layer = 20;
 
     constructor(
+        public template: BulletTemplate,
         public x: number,
         public y: number,
-        public size: number,
-        public template: BulletTemplate,
-        public motion: Motion
+        public motion: Motion,
+        public size = template.size
     ) {
         super(x, y, size);
         motion.attach(this);
+
+        if (template.layer) {
+            this.layer = template.layer;
+        }
     }
 
     get source() {
@@ -46,20 +57,24 @@ export class Bullet extends Entity {
 export type SpawnPattern = {
     startAngle?: Angle;
     endAngle?: Angle;
+    speed?: number;
     rays?: number;
     waves?: number;
     interval?: number;
-    pattern?: SpawnPattern;
     targeted?: true;
+
+    patterns?: SpawnPattern[];
     bullets?: {
-        angle: Angle;
-        size: number;
-        speed: number;
+        angle?: Angle;
         offset?: number;
+        size?: number;
+        speed?: number;
     }[];
 };
 
-export class BulletSpawner {
+export class BulletSpawnerTemplate {
+    public timers: WeakRef<Timer>[] = [];
+
     constructor(public patterns: SpawnPattern[]) {}
 
     spawnPattern(
@@ -71,7 +86,7 @@ export class BulletSpawner {
         drift = 0
     ) {
         if (pattern.waves && pattern.interval) {
-            new Timer(
+            const timer = new Timer(
                 pattern.interval,
                 (drift) => {
                     this.spawnPatternWave(
@@ -85,6 +100,8 @@ export class BulletSpawner {
                 },
                 pattern.waves
             );
+
+            this.timers.push(new WeakRef(timer));
         } else {
             this.spawnPatternWave(
                 pattern,
@@ -127,41 +144,63 @@ export class BulletSpawner {
         for (let i = 0; i < rays; i++) {
             const angle = facing + startAngle + interval * i;
 
-            if (pattern.pattern) {
-                this.spawnPattern(
-                    pattern.pattern,
-                    template,
-                    origin,
-                    angle,
-                    speed,
-                    drift
-                );
+            if (pattern.patterns) {
+                for (const subpattern of pattern.patterns) {
+                    this.spawnPattern(
+                        subpattern,
+                        template,
+                        origin,
+                        angle,
+                        speed,
+                        drift
+                    );
+                }
             } else if (pattern.bullets) {
                 for (const bullet of pattern.bullets) {
                     const b = new Bullet(
+                        template,
                         origin.x + (bullet.offset || 0),
                         origin.y,
-                        bullet.size,
-                        template,
                         new Motion({
-                            angle: angle + bullet.angle,
-                            speed: speed * bullet.speed,
+                            angle: angle + (bullet.angle || 0),
+                            speed: speed * (bullet.speed || 1),
                         })
                     ).update(drift);
+
+                    if (bullet.size) {
+                        b.size *= bullet.size;
+                    }
                 }
             }
         }
     }
 
-    spawn(
-        template: BulletTemplate,
-        origin: Point,
-        facing: Angle,
-        speed: number,
-        drift = 0
-    ) {
+    spawn(template: BulletTemplate, origin: Point, facing: Angle, drift = 0) {
         for (const pattern of this.patterns) {
-            this.spawnPattern(pattern, template, origin, facing, speed, drift);
+            this.spawnPattern(
+                pattern,
+                template,
+                origin,
+                facing,
+                pattern.speed || 0,
+                drift
+            );
         }
     }
+
+    destroy() {
+        for (const timer of this.timers) {
+            timer.deref()?.destroy();
+        }
+    }
+}
+
+export class BulletSpawner {
+    constructor(
+        public template: BulletSpawnerTemplate,
+        public origin: Point,
+        public facing: Angle
+    ) {}
+
+    spawn(drift = 0) {}
 }

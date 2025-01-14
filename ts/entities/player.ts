@@ -23,7 +23,7 @@ export class Player extends Entity {
     }
 
     update(dt: number) {
-        this.refresh(dt);
+        super.update(dt);
 
         // movement
         const left = keyboard.has("a") || keyboard.has("arrowleft");

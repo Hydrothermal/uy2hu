@@ -1,11 +1,28 @@
 import { Motion } from "../motion.js";
-import { Bullet } from "./bullet.js";
+import { Timer } from "../timer.js";
+import { Props } from "../util.js";
+import { Bullet, BulletSpawnerTemplate, BulletTemplate } from "./bullet.js";
 import { Entity } from "./entity.js";
+
+export class EnemyTemplate {
+    public hp = 0;
+    public bullets?: {
+        template: BulletTemplate;
+        spawner: BulletSpawnerTemplate;
+    };
+
+    constructor(options: Partial<Props<EnemyTemplate>>) {
+        Object.assign(this, options);
+    }
+}
 
 export class Enemy extends Entity {
     public layer = 30;
+    public maxhp = 0;
+    public hp = 0;
 
     constructor(
+        public template: EnemyTemplate,
         public x: number,
         public y: number,
         public size: number,
@@ -13,19 +30,39 @@ export class Enemy extends Entity {
     ) {
         super(x, y, size);
         motion.attach(this);
+
+        this.hp = this.maxhp = template.hp;
+
+        if (this.template.bullets) {
+            this.template.bullets.spawner.spawn(
+                this.template.bullets.template,
+                this,
+                90,
+                150
+            );
+        }
+    }
+
+    destroy() {
+        super.destroy();
     }
 
     update(dt: number) {
-        this.refresh(dt);
+        super.update(dt);
 
         // collision
         for (const entity of Entity.entities) {
             if (entity instanceof Bullet && entity.source === "player") {
                 if (this.collides(entity)) {
                     entity.destroy();
+                    this.hp--;
                     break;
                 }
             }
+        }
+
+        if (this.hp < 0) {
+            this.destroy();
         }
 
         return this;
