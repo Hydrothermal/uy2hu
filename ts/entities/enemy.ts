@@ -1,7 +1,12 @@
 import { Motion } from "../motion.js";
 import { Timer } from "../timer.js";
 import { Props } from "../util.js";
-import { Bullet, BulletSpawnerTemplate, BulletTemplate } from "./bullet.js";
+import {
+    Bullet,
+    BulletSpawner,
+    BulletSpawnerTemplate,
+    BulletTemplate,
+} from "./bullet.js";
 import { Entity } from "./entity.js";
 
 export class EnemyTemplate {
@@ -20,6 +25,7 @@ export class Enemy extends Entity {
     public layer = 30;
     public maxhp = 0;
     public hp = 0;
+    public bullet_spawner?: BulletSpawner;
 
     constructor(
         public template: EnemyTemplate,
@@ -33,18 +39,20 @@ export class Enemy extends Entity {
 
         this.hp = this.maxhp = template.hp;
 
-        if (this.template.bullets) {
-            this.template.bullets.spawner.spawn(
-                this.template.bullets.template,
+        const bullets = this.template.bullets;
+
+        if (bullets) {
+            this.bullet_spawner = bullets.spawner.spawn(
+                bullets.template,
                 this,
-                90,
-                150
+                90
             );
         }
     }
 
     destroy() {
         super.destroy();
+        this.bullet_spawner?.destroy();
     }
 
     update(dt: number) {

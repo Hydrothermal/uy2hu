@@ -73,9 +73,29 @@ export type SpawnPattern = {
 };
 
 export class BulletSpawnerTemplate {
+    constructor(public patterns: SpawnPattern[]) {}
+
+    spawn(
+        bullet_template: BulletTemplate,
+        origin: Point,
+        facing: Angle,
+        drift = 0
+    ) {
+        return new BulletSpawner(this, origin, facing).spawn(
+            bullet_template,
+            drift
+        );
+    }
+}
+
+export class BulletSpawner {
     public timers: WeakRef<Timer>[] = [];
 
-    constructor(public patterns: SpawnPattern[]) {}
+    constructor(
+        public template: BulletSpawnerTemplate,
+        public origin: Point,
+        public facing: Angle
+    ) {}
 
     spawnPattern(
         pattern: SpawnPattern,
@@ -175,17 +195,19 @@ export class BulletSpawnerTemplate {
         }
     }
 
-    spawn(template: BulletTemplate, origin: Point, facing: Angle, drift = 0) {
-        for (const pattern of this.patterns) {
+    spawn(bullet_template: BulletTemplate, drift = 0) {
+        for (const pattern of this.template.patterns) {
             this.spawnPattern(
                 pattern,
-                template,
-                origin,
-                facing,
+                bullet_template,
+                this.origin,
+                this.facing,
                 pattern.speed || 0,
                 drift
             );
         }
+
+        return this;
     }
 
     destroy() {
@@ -193,14 +215,4 @@ export class BulletSpawnerTemplate {
             timer.deref()?.destroy();
         }
     }
-}
-
-export class BulletSpawner {
-    constructor(
-        public template: BulletSpawnerTemplate,
-        public origin: Point,
-        public facing: Angle
-    ) {}
-
-    spawn(drift = 0) {}
 }
