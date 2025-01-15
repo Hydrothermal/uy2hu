@@ -2,7 +2,8 @@ import { Motion } from "../motion.js";
 import { HEIGHT, keyboard, WIDTH } from "../interface.js";
 import { Entity } from "./entity.js";
 import { RAD_TO_DEG } from "../util.js";
-import { Bullet } from "./bullet.js";
+import { Bullet, BulletSpawnerTemplate, BulletTemplate } from "./bullet.js";
+import { player_bullets } from "../content/bullet_patterns.js";
 
 export class Player extends Entity {
     public layer = 10;
@@ -74,4 +75,19 @@ export class Player extends Entity {
         ctx.fill();
         ctx.stroke();
     }
+}
+
+export function initPlayer() {
+    const player = (Entity.player = new Player());
+
+    const spawner = new BulletSpawnerTemplate([player_bullets]);
+    const bullet_template = new BulletTemplate({
+        color: "#6f6",
+        opacity: 0.8,
+        size: 1,
+        layer: 19,
+    });
+    bullet_template.source = "player";
+
+    spawner.spawn(bullet_template, player, 270);
 }

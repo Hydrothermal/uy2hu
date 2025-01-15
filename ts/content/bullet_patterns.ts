@@ -1,5 +1,25 @@
 import { SpawnPattern } from "../entities/bullet.js";
 
+export const player_bullets: SpawnPattern = {
+    waves: Infinity,
+    interval: 50,
+    speed: 500,
+    patterns: [
+        {
+            startAngle: -10,
+            endAngle: 10,
+            rays: 4,
+            bullets: [{ angle: 0, size: 2 }],
+        },
+        {
+            bullets: [
+                { angle: 0, size: 2, offset: -4 },
+                { angle: 0, size: 2, offset: +4 },
+            ],
+        },
+    ],
+};
+
 export const chain_shot: SpawnPattern = {
     rays: 1,
     bullets: [
@@ -11,7 +31,7 @@ export const chain_shot: SpawnPattern = {
     ],
 };
 
-const triangle_spread: SpawnPattern = {
+export const triangle_spread: SpawnPattern = {
     startAngle: 0,
     endAngle: 360,
     rays: 10,

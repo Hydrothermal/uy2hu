@@ -2,6 +2,12 @@ import { Motion } from "../motion.js";
 import { HEIGHT, WIDTH } from "../interface.js";
 import { distanceTo } from "../util.js";
 
+// layers
+// 30: enemies
+// 20: bullets
+// 19: player bullets
+// 10: player
+
 export abstract class Entity {
     public layer = 10;
     public motion?: Motion;
