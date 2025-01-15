@@ -1,6 +1,7 @@
 import { Motion } from "../motion.js";
 import { HEIGHT, WIDTH } from "../interface.js";
 import { distanceTo } from "../util.js";
+import type { Player } from "./player.js";
 
 // layers
 // 30: enemies
@@ -19,7 +20,7 @@ export abstract class Entity {
     }
 
     static entities = new Set<Entity>();
-    static player: Entity;
+    static player: Player;
 
     get oob() {
         const edge = this.size + 20;

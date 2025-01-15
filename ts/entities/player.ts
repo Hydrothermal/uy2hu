@@ -5,10 +5,20 @@ import { RAD_TO_DEG } from "../util.js";
 import { Bullet, BulletSpawnerTemplate, BulletTemplate } from "./bullet.js";
 import { player_bullets } from "../content/bullet_patterns.js";
 
+const spawner = new BulletSpawnerTemplate([player_bullets]);
+const bullet_template = new BulletTemplate({
+    color: "#6f6",
+    opacity: 0.8,
+    size: 1,
+    layer: 19,
+});
+bullet_template.source = "player";
+
 export class Player extends Entity {
     public layer = 10;
     public graze = 1;
 
+    public active = false;
     public speed = 200;
     public is_player = true;
     public motion: Motion = new Motion({
@@ -21,6 +31,11 @@ export class Player extends Entity {
     constructor() {
         const size = 5;
         super(WIDTH / 2, HEIGHT - 50, size);
+    }
+
+    activate() {
+        this.active = true;
+        spawner.spawn(bullet_template, this, 270);
     }
 
     update(dt: number) {
@@ -59,35 +74,26 @@ export class Player extends Entity {
     }
 
     render(ctx: CanvasRenderingContext2D) {
-        ctx.fillStyle = "#ccc";
-        ctx.strokeStyle = "#000";
+        if (this.active) {
+            ctx.fillStyle = "#ccc";
+            ctx.strokeStyle = "#000";
 
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, 20, 0, 2 * Math.PI);
-        ctx.fill();
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, 20, 0, 2 * Math.PI);
+            ctx.fill();
 
-        ctx.fillStyle = this.colliding ? "#f00" : "#0ff";
-        ctx.strokeStyle = "#000";
-        ctx.lineWidth = 1;
+            ctx.fillStyle = this.colliding ? "#f00" : "#0ff";
+            ctx.strokeStyle = "#000";
+            ctx.lineWidth = 1;
 
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
-        ctx.fill();
-        ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.stroke();
+        }
     }
 }
 
 export function initPlayer() {
-    const player = (Entity.player = new Player());
-
-    const spawner = new BulletSpawnerTemplate([player_bullets]);
-    const bullet_template = new BulletTemplate({
-        color: "#6f6",
-        opacity: 0.8,
-        size: 1,
-        layer: 19,
-    });
-    bullet_template.source = "player";
-
-    spawner.spawn(bullet_template, player, 270);
+    Entity.player = new Player();
 }

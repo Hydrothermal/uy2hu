@@ -46,3 +46,9 @@ export class Timer {
         }
     }
 }
+
+export function delay(ms: number) {
+    return new Promise((resolve, reject) => {
+        new Timer(ms, resolve);
+    });
+}

@@ -50,7 +50,10 @@ function main(ts: number) {
 
 export function initGame() {
     initPlayer();
-    scenes.testScene();
-
     requestAnimationFrame(main);
+
+    setTimeout(() => {
+        Entity.player.activate();
+        scenes.testScene();
+    }, 500);
 }

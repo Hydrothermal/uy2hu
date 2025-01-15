@@ -4,6 +4,7 @@ import * as patterns from "./bullet_patterns.js";
 
 export const test_enemy = new EnemyTemplate({
     hp: 300,
+    size: 20,
     bullets: {
         template: new BulletTemplate({ color: "#00a", size: 8 }),
         spawner: new BulletSpawnerTemplate([

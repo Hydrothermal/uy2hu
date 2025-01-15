@@ -24,6 +24,7 @@ export class Motion {
     }
 
     attach(parent: Entity) {
+        parent.motion = this;
         this.parent = parent;
 
         if (this.target) {

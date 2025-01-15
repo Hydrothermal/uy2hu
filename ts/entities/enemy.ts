@@ -1,3 +1,4 @@
+import type { Behavior } from "../behavior.js";
 import { Motion } from "../motion.js";
 import { Timer } from "../timer.js";
 import { Props } from "../util.js";
@@ -11,6 +12,7 @@ import { Entity } from "./entity.js";
 
 export class EnemyTemplate {
     public hp = 0;
+    public size = 15;
     public bullets?: {
         template: BulletTemplate;
         spawner: BulletSpawnerTemplate;
@@ -31,16 +33,14 @@ export class Enemy extends Entity {
         public template: EnemyTemplate,
         public x: number,
         public y: number,
-        public size: number,
-        public motion: Motion
+        public behavior: Behavior
     ) {
-        super(x, y, size);
-        motion.attach(this);
+        super(x, y, template.size);
+        behavior.attach(this);
 
         this.hp = this.maxhp = template.hp;
 
         const bullets = this.template.bullets;
-
         if (bullets) {
             this.bullet_spawner = bullets.spawner.spawn(
                 bullets.template,
@@ -52,6 +52,7 @@ export class Enemy extends Entity {
 
     destroy() {
         super.destroy();
+        this.behavior.destroy();
         this.bullet_spawner?.destroy();
     }
 
