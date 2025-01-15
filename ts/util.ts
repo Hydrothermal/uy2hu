@@ -5,6 +5,7 @@ export type Props<T> = {
 declare global {
     interface CanvasRenderingContext2D {
         rotated(x: number, y: number, angle: Angle, fn: () => void): void;
+        drawCentered(img: HTMLImageElement, x: number, y: number): void;
     }
 }
 
@@ -14,6 +15,10 @@ CanvasRenderingContext2D.prototype.rotated = function (x, y, angle, fn) {
     this.rotate(angle * DEG_TO_RAD);
     fn();
     this.restore();
+};
+
+CanvasRenderingContext2D.prototype.drawCentered = function (img, x, y) {
+    this.drawImage(img, x - img.width / 2, y - img.height / 2);
 };
 
 // math stuff

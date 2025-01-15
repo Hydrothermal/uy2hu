@@ -1,10 +1,11 @@
 import { Entity } from "./entities/entity.js";
 import { initPlayer } from "./entities/player.js";
-import { canvas } from "./interface.js";
+import { canvas, ctx } from "./interface.js";
 import { game_time, setGameTime, Timer } from "./timer.js";
 import * as scenes from "./content/scenes.js";
+import { state } from "./state.js";
 
-const ctx = canvas.getContext("2d")!;
+ctx.textBaseline = "top";
 
 function main(ts: number) {
     // initial frame delay
@@ -25,6 +26,11 @@ function main(ts: number) {
     }
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // menu
+    if (state.scene === "menu") {
+        scenes.drawMenu();
+    }
 
     // game loop
     for (const timer of Timer.timers) {
@@ -51,9 +57,4 @@ function main(ts: number) {
 export function initGame() {
     initPlayer();
     requestAnimationFrame(main);
-
-    setTimeout(() => {
-        Entity.player.activate();
-        scenes.testScene();
-    }, 500);
 }

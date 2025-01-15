@@ -1,8 +1,9 @@
 import { Behavior } from "../behavior.js";
 import { Enemy } from "../entities/enemy.js";
-import type { Entity } from "../entities/entity.js";
+import { Entity } from "../entities/entity.js";
 import { Motion } from "../motion.js";
 import * as enemies from "./enemies.js";
+import { drawMenu } from "./scenes/menu.js";
 
 const behavior = async (entity: Entity, behavior: Behavior) => {
     new Motion({
@@ -23,6 +24,9 @@ const behavior = async (entity: Entity, behavior: Behavior) => {
     behavior.restart();
 };
 
-export async function testScene() {
+export async function stage1() {
+    Entity.player.activate();
     new Enemy(enemies.test_enemy, 250, -30, new Behavior(behavior));
 }
+
+export { drawMenu };

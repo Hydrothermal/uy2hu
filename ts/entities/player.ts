@@ -90,7 +90,7 @@ export class Player extends Entity {
     render(ctx: CanvasRenderingContext2D) {
         if (this.active) {
             ctx.rotated(this.x, this.y, this.tilt, () => {
-                ctx.drawImage(images.david, -25, -40);
+                ctx.drawImage(images.david, -25, -30);
             });
 
             ctx.fillStyle = this.colliding ? "#f00" : "#6ff";
