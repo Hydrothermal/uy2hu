@@ -1,3 +1,9 @@
+import { initResources } from "./content/resources.js";
 import { initGame } from "./game.js";
 
-initGame();
+async function start() {
+    await initResources();
+    initGame();
+}
+
+start();

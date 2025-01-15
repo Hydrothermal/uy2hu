@@ -2,6 +2,20 @@ export type Props<T> = {
     [K in keyof T as T[K] extends Function ? never : K]: T[K];
 };
 
+declare global {
+    interface CanvasRenderingContext2D {
+        rotated(x: number, y: number, angle: Angle, fn: () => void): void;
+    }
+}
+
+CanvasRenderingContext2D.prototype.rotated = function (x, y, angle, fn) {
+    this.save();
+    this.translate(x, y);
+    this.rotate(angle * DEG_TO_RAD);
+    fn();
+    this.restore();
+};
+
 // math stuff
 export type Angle = number & { __type?: "angle" };
 export type Length = number & { __type?: "length" };

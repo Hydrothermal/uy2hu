@@ -1,21 +1,22 @@
 import { Motion } from "../motion.js";
 import { HEIGHT, keyboard, WIDTH } from "../interface.js";
 import { Entity } from "./entity.js";
-import { RAD_TO_DEG } from "../util.js";
+import { DEG_TO_RAD, RAD_TO_DEG } from "../util.js";
 import { Bullet, BulletSpawnerTemplate, BulletTemplate } from "./bullet.js";
 import { player_bullets } from "../content/bullet_patterns.js";
+import { images } from "../content/resources.js";
 
 const spawner = new BulletSpawnerTemplate([player_bullets]);
 const bullet_template = new BulletTemplate({
     color: "#6f6",
     opacity: 0.8,
     size: 1,
-    layer: 19,
+    layer: 14,
 });
 bullet_template.source = "player";
 
 export class Player extends Entity {
-    public layer = 10;
+    public layer = 15;
     public graze = 1;
 
     public active = false;
@@ -27,6 +28,7 @@ export class Player extends Entity {
         parent: this,
     });
     public colliding = false;
+    public tilt = 0;
 
     constructor() {
         const size = 5;
@@ -59,6 +61,18 @@ export class Player extends Entity {
             this.motion.speed = this.speed;
         }
 
+        // tilt
+        const max_tilt = 15;
+        const tilt_strength = 0.3;
+
+        if (x > 0) {
+            this.tilt = Math.min(max_tilt, this.tilt + dt * tilt_strength);
+        } else if (x < 0) {
+            this.tilt = Math.max(-max_tilt, this.tilt - dt * tilt_strength);
+        } else {
+            this.tilt -= Math.sign(this.tilt);
+        }
+
         // collision
         this.colliding = false;
         for (const entity of Entity.entities) {
@@ -75,20 +89,19 @@ export class Player extends Entity {
 
     render(ctx: CanvasRenderingContext2D) {
         if (this.active) {
-            ctx.fillStyle = "#ccc";
-            ctx.strokeStyle = "#000";
+            ctx.rotated(this.x, this.y, this.tilt, () => {
+                ctx.drawImage(images.david, -25, -40);
+            });
 
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, 20, 0, 2 * Math.PI);
-            ctx.fill();
-
-            ctx.fillStyle = this.colliding ? "#f00" : "#0ff";
-            ctx.strokeStyle = "#000";
+            ctx.fillStyle = this.colliding ? "#f00" : "#6ff";
+            ctx.strokeStyle = "#0aa";
             ctx.lineWidth = 1;
 
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+            ctx.filter = "blur(2px)";
             ctx.fill();
+            ctx.filter = "none";
             ctx.stroke();
         }
     }

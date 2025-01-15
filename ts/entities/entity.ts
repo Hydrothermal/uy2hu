@@ -6,8 +6,8 @@ import type { Player } from "./player.js";
 // layers
 // 30: enemies
 // 20: bullets
-// 19: player bullets
-// 10: player
+// 15: player
+// 14: player bullets
 
 export abstract class Entity {
     public layer = 10;
