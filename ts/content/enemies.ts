@@ -3,7 +3,7 @@ import { EnemyTemplate } from "../entities/enemy.js";
 import * as patterns from "./bullet_patterns.js";
 
 export const test_enemy = new EnemyTemplate({
-    hp: 300,
+    hp: 100,
     size: 20,
     bullets: {
         template: new BulletTemplate({ color: "#00a", size: 8 }),

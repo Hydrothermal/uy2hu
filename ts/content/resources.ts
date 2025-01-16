@@ -1,5 +1,6 @@
 export const images = {
-    title: new Image(),
+    logo: new Image(),
+    controls: new Image(),
     david: new Image(),
     david_face: new Image(),
     trevor: new Image(),
@@ -35,7 +36,7 @@ let playing_bgm: HTMLAudioElement | null = null;
 
 function loadImage(name: keyof typeof images) {
     return new Promise((resolve, reject) => {
-        images[name].src = `img/${name}.png`;
+        images[name].src = `img/${name}.${name === "logo" ? "gif" : "png"}`;
         images[name].addEventListener("load", resolve);
     });
 }
@@ -56,9 +57,28 @@ export async function playSound(name: keyof typeof sfx) {
     sfx[name].play();
 }
 
-export async function playMusic(name: keyof typeof bgm) {
-    playing_bgm?.pause();
+export async function fadeOutMusic(fade_speed = 0.1) {
+    return new Promise<void>((resolve, reject) => {
+        if (playing_bgm) {
+            const audio = playing_bgm;
+            const interval = setInterval(() => {
+                audio.volume = Math.max(0, audio.volume - fade_speed);
+
+                if (audio.volume === 0) {
+                    resolve();
+                    clearInterval(interval);
+                }
+            }, 100);
+        } else {
+            resolve();
+        }
+    });
+}
+
+export async function playMusic(name: keyof typeof bgm, fade_speed?: number) {
+    await fadeOutMusic(fade_speed);
     playing_bgm = bgm[name];
+    playing_bgm.volume = 1;
     playing_bgm.currentTime = 0;
     playing_bgm.play();
 }

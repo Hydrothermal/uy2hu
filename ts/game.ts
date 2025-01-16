@@ -1,9 +1,10 @@
 import { Entity } from "./entities/entity.js";
 import { initPlayer } from "./entities/player.js";
-import { canvas, ctx } from "./interface.js";
-import { game_time, setGameTime, Timer } from "./timer.js";
+import { canvas, ctx, wipeDecals } from "./interface.js";
+import { delay, game_time, setGameTime, Timer } from "./timer.js";
 import * as scenes from "./content/scenes.js";
-import { state } from "./state.js";
+import { state, StateMessage } from "./state.js";
+import { playMusic } from "./content/resources.js";
 
 ctx.textBaseline = "top";
 
@@ -25,12 +26,11 @@ function main(ts: number) {
         dt = 0;
     }
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // menu
-    if (state.scene === "menu") {
-        scenes.drawMenu();
-    }
+    state.renderScene?.();
 
     // game loop
     for (const timer of Timer.timers) {
@@ -54,7 +54,28 @@ function main(ts: number) {
     requestAnimationFrame(main);
 }
 
-export function initGame() {
+export async function initGame() {
     initPlayer();
     requestAnimationFrame(main);
+
+    // scenes.loading();
+    scenes.stage1();
 }
+
+state.advance = async (message: StateMessage) => {
+    switch (message) {
+        case "loading->menu":
+            await playMusic("menu");
+            scenes.menu();
+            break;
+
+        case "menu->stage1":
+            await playMusic("stage1");
+            wipeDecals();
+            scenes.stage1();
+            break;
+    }
+};
+
+state.character = "cotton";
+state.scene = "stage1";

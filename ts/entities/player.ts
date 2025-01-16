@@ -3,10 +3,20 @@ import { HEIGHT, keyboard, WIDTH } from "../interface.js";
 import { Entity } from "./entity.js";
 import { DEG_TO_RAD, RAD_TO_DEG } from "../util.js";
 import { Bullet, BulletSpawnerTemplate, BulletTemplate } from "./bullet.js";
-import { player_bullets } from "../content/bullet_patterns.js";
+import {
+    cotton_bullets,
+    david_bullets,
+    trevor_bullets,
+} from "../content/bullet_patterns.js";
 import { images } from "../content/resources.js";
+import { state } from "../state.js";
 
-const spawner = new BulletSpawnerTemplate([player_bullets]);
+const spawners = {
+    david: new BulletSpawnerTemplate(david_bullets),
+    trevor: new BulletSpawnerTemplate(trevor_bullets),
+    cotton: new BulletSpawnerTemplate(cotton_bullets),
+};
+
 const bullet_template = new BulletTemplate({
     color: "#6f6",
     opacity: 0.8,
@@ -36,8 +46,10 @@ export class Player extends Entity {
     }
 
     activate() {
-        this.active = true;
-        spawner.spawn(bullet_template, this, 270);
+        if (!this.active) {
+            this.active = true;
+            spawners[state.character].spawn(bullet_template, this, 270);
+        }
     }
 
     update(dt: number) {
@@ -90,7 +102,7 @@ export class Player extends Entity {
     render(ctx: CanvasRenderingContext2D) {
         if (this.active) {
             ctx.rotated(this.x, this.y, this.tilt, () => {
-                ctx.drawImage(images.david, -25, -30);
+                ctx.drawImage(images[state.character], -30, -50);
             });
 
             ctx.fillStyle = this.colliding ? "#f00" : "#6ff";
