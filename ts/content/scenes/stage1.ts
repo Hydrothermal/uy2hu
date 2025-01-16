@@ -34,7 +34,7 @@ export async function stage1() {
     // initialize gameplay
     Entity.player.activate();
 
-    state.power = state.difficulty === 1 ? 25 : 0;
+    state.power = 35 - state.difficulty * 10;
     state.bombs = state.difficulty === 3 ? 2 : 3;
     state.lives = 4 - state.difficulty;
 

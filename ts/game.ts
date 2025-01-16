@@ -63,8 +63,8 @@ function main(ts: number) {
 export async function initGame() {
     requestAnimationFrame(main);
 
-    // scenes.loading();
-    scenes.stage1();
+    scenes.menu();
+    // scenes.stage1();
 }
 
 const game_scenes = ["stage1", "stage2", "stage3", "boss1", "boss2", "boss3"];

@@ -5,6 +5,7 @@ import type { Player } from "./player.js";
 
 // layers
 // 30: enemies
+// 25: coins
 // 20: bullets
 // 15: player
 // 14: player bullets
@@ -14,6 +15,11 @@ export abstract class Entity {
     public motion?: Motion;
     public is_player = false;
     public graze = 0;
+
+    public oob_left = true;
+    public oob_right = true;
+    public oob_top = true;
+    public oob_bottom = true;
 
     constructor(public x: number, public y: number, public size: number) {
         Entity.entities.add(this);
@@ -26,10 +32,10 @@ export abstract class Entity {
         const edge = this.size + 20;
 
         return (
-            this.x < -edge ||
-            this.y < -edge ||
-            this.x > GAME_WIDTH + edge ||
-            this.y > HEIGHT + edge
+            (this.oob_left && this.x < -edge) ||
+            (this.oob_top && this.y < -edge) ||
+            (this.oob_right && this.x > GAME_WIDTH + edge) ||
+            (this.oob_bottom && this.y > HEIGHT + edge)
         );
     }
 

@@ -21,6 +21,7 @@ export const images = {
     sara_face: new Image(),
     sara_face_2: new Image(),
 
+    coin: new Image(),
     fray: new Image(),
 };
 
@@ -41,6 +42,8 @@ export const sfx = {
     touch: new Audio(),
     guh_dong: new Audio(),
     bomb: new Audio(),
+    coins: new Audio(),
+    kill: new Audio(),
 };
 
 let playing_bgm: HTMLAudioElement | null = null;

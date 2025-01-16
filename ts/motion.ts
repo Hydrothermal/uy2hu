@@ -14,6 +14,7 @@ export class Motion {
 
     public parent?: Entity;
     public target?: Entity;
+    public homing = false;
 
     constructor(options: Partial<Props<Motion>>) {
         Object.assign(this, options);
@@ -24,7 +25,10 @@ export class Motion {
     }
 
     attach(parent: Entity) {
-        parent.motion = this;
+        if (!parent.motion) {
+            parent.motion = this;
+        }
+
         this.parent = parent;
 
         if (this.target) {
@@ -33,6 +37,10 @@ export class Motion {
     }
 
     apply(dt: number, entity: Entity) {
+        if (this.homing && this.parent && this.target) {
+            this.angle = angleTo(this.parent, this.target);
+        }
+
         this.angle += this.rotation * 0.01 * dt;
 
         this.speed += (this.acceleration / SPEED_FACTOR) * dt;

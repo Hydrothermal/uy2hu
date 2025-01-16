@@ -1,14 +1,16 @@
 import type { Behavior } from "../behavior.js";
+import { playSound } from "../content/resources.js";
 import { Motion } from "../motion.js";
 import { state } from "../state.js";
 import { Timer } from "../timer.js";
-import { Props } from "../util.js";
+import { Props, randRange } from "../util.js";
 import {
     Bullet,
     BulletSpawner,
     BulletSpawnerTemplate,
     BulletTemplate,
 } from "./bullet.js";
+import { Coin } from "./coin.js";
 import { Entity } from "./entity.js";
 
 export class EnemyTemplate {
@@ -57,6 +59,24 @@ export class Enemy extends Entity {
         this.bullet_spawner?.destroy();
     }
 
+    die() {
+        state.score += this.maxhp;
+        state.power += 3;
+
+        let coins = Math.floor(this.maxhp / 100) + randRange(0, 1);
+
+        if (this.maxhp >= 100) {
+            coins++;
+        }
+
+        for (let i = 0; i < coins; i++) {
+            new Coin(this.x, this.y);
+        }
+
+        playSound("kill");
+        this.destroy();
+    }
+
     update(dt: number) {
         super.update(dt);
 
@@ -72,8 +92,7 @@ export class Enemy extends Entity {
         }
 
         if (this.hp < 0) {
-            state.score += this.maxhp;
-            this.destroy();
+            this.die();
         }
 
         return this;
