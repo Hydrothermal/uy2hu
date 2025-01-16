@@ -1,6 +1,17 @@
 export const images = {
+    // menu
     logo: new Image(),
     controls: new Image(),
+    arrow_right: new Image(),
+    arrow_down: new Image(),
+    start_button: new Image(),
+
+    // sidebar
+    sidebar: new Image(),
+    life: new Image(),
+    card: new Image(),
+
+    // characters
     david: new Image(),
     david_face: new Image(),
     trevor: new Image(),
@@ -9,9 +20,8 @@ export const images = {
     cotton_face: new Image(),
     sara_face: new Image(),
     sara_face_2: new Image(),
-    arrow_right: new Image(),
-    arrow_down: new Image(),
-    start_button: new Image(),
+
+    fray: new Image(),
 };
 
 export const bgm = {
@@ -30,6 +40,7 @@ export const sfx = {
     click: new Audio(),
     touch: new Audio(),
     guh_dong: new Audio(),
+    bomb: new Audio(),
 };
 
 let playing_bgm: HTMLAudioElement | null = null;

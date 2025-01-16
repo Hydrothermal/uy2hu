@@ -65,11 +65,8 @@ function menuSelect() {
             playSound("imposed");
         } else {
             playSound("guh_dong");
-
-            // setTimeout(() => {
             state.advance("menu->stage1");
             disabled = true;
-            // }, 400);
         }
 
         return;

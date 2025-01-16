@@ -31,10 +31,40 @@
                 z-index: 2;
                 height: 800px;
                 aspect-ratio: 6 / 8;
+                pointer-events: none;
+                overflow: hidden;
             }
 
             #decals img {
                 position: absolute;
+            }
+
+            @keyframes fray {
+                0% {
+                    opacity: 0.2;
+                    top: 0px;
+                    transform: scale(1);
+                }
+
+                10% {
+                    top: 0px;
+                }
+
+                20% {
+                    opacity: 0.4;
+                    transform: scale(1);
+                }
+
+                100% {
+                    opacity: 0;
+                    top: 50px;
+                    transform: scale(0.95);
+                }
+            }
+
+            #decals .fray {
+                opacity: 0;
+                animation: fray 1500ms ease;
             }
         </style>
     </head>

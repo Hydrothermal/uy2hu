@@ -1,6 +1,7 @@
 import { Motion } from "../motion.js";
+import { state } from "../state.js";
 import { Timer } from "../timer.js";
-import { Angle, angleTo, Point, Props } from "../util.js";
+import { Angle, angleTo, Point, Props, randRange } from "../util.js";
 import { Entity } from "./entity.js";
 
 export class BulletTemplate {
@@ -27,6 +28,18 @@ export class Bullet extends Entity {
     ) {
         super(x, y, size);
         motion.attach(this);
+
+        if (this.source === "enemy") {
+            if (state.stop_bullets) {
+                this.destroy();
+            }
+
+            if (Entity.player.active) {
+                setTimeout(() => {
+                    state.score++;
+                }, randRange(1, 50));
+            }
+        }
 
         if (template.layer) {
             this.layer = template.layer;

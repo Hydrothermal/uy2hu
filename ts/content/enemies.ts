@@ -3,16 +3,15 @@ import { EnemyTemplate } from "../entities/enemy.js";
 import * as patterns from "./bullet_patterns.js";
 
 export const test_enemy = new EnemyTemplate({
-    hp: 100,
+    hp: 500,
     size: 20,
     bullets: {
         template: new BulletTemplate({ color: "#00a", size: 8 }),
         spawner: new BulletSpawnerTemplate([
             {
                 waves: Infinity,
-                interval: 2000,
-                targeted: true,
-                speed: 200,
+                interval: 1000,
+                speed: 400,
                 patterns: [patterns.chain_shot],
             },
         ]),

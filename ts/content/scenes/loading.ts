@@ -18,6 +18,6 @@ export function loading() {
 
 onKey((key) => {
     if (state.scene === "loading") {
-        state.advance("loading->menu");
+        state.advance("menu");
     }
 });

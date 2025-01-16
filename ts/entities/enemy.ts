@@ -1,5 +1,6 @@
 import type { Behavior } from "../behavior.js";
 import { Motion } from "../motion.js";
+import { state } from "../state.js";
 import { Timer } from "../timer.js";
 import { Props } from "../util.js";
 import {
@@ -71,6 +72,7 @@ export class Enemy extends Entity {
         }
 
         if (this.hp < 0) {
+            state.score += this.maxhp;
             this.destroy();
         }
 

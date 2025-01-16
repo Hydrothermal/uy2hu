@@ -1,5 +1,5 @@
 import { Motion } from "../motion.js";
-import { HEIGHT, WIDTH } from "../interface.js";
+import { GAME_WIDTH, HEIGHT } from "../interface.js";
 import { distanceTo } from "../util.js";
 import type { Player } from "./player.js";
 
@@ -28,7 +28,7 @@ export abstract class Entity {
         return (
             this.x < -edge ||
             this.y < -edge ||
-            this.x > WIDTH + edge ||
+            this.x > GAME_WIDTH + edge ||
             this.y > HEIGHT + edge
         );
     }
@@ -37,7 +37,10 @@ export abstract class Entity {
         this.motion?.apply(dt, this);
 
         if (this.is_player) {
-            this.x = Math.min(Math.max(this.x, this.size), WIDTH - this.size);
+            this.x = Math.min(
+                Math.max(this.x, this.size),
+                GAME_WIDTH - this.size
+            );
             this.y = Math.min(Math.max(this.y, this.size), HEIGHT - this.size);
         } else if (this.oob) {
             this.destroy();

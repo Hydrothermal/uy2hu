@@ -11,7 +11,7 @@ export const david_bullets: SpawnPattern[] = [
                 startAngle: -12,
                 endAngle: 12,
                 rays: 4,
-                bullets: [{ size: 4 }],
+                bullets: [{ size: 3 }],
             },
         ],
     },
@@ -53,13 +53,26 @@ export const trevor_bullets: SpawnPattern[] = [
                 startAngle: -10,
                 endAngle: 10,
                 rays: 4,
-                bullets: [{ angle: 0, size: 2 }],
+                bullets: [{ size: 2 }],
             },
             {
                 bullets: [
-                    { angle: 0, size: 2, offset: -4 },
-                    { angle: 0, size: 2, offset: +4 },
+                    { size: 2, offset: -4 },
+                    { size: 2, offset: +4 },
                 ],
+            },
+        ],
+    },
+    {
+        waves: Infinity,
+        interval: 150,
+        speed: 500,
+        patterns: [
+            {
+                startAngle: -25,
+                endAngle: 25,
+                rays: 2,
+                bullets: [{ size: 6 }],
             },
         ],
     },
@@ -84,6 +97,10 @@ export const cotton_bullets: SpawnPattern[] = [
 ];
 
 // enemy patterns
+export const single: SpawnPattern = {
+    bullets: [{ angle: 0 }],
+};
+
 export const chain_shot: SpawnPattern = {
     rays: 1,
     bullets: [

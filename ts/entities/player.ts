@@ -1,8 +1,13 @@
 import { Motion } from "../motion.js";
-import { HEIGHT, keyboard, WIDTH } from "../interface.js";
+import { HEIGHT, keyboard, GAME_WIDTH } from "../interface.js";
 import { Entity } from "./entity.js";
 import { DEG_TO_RAD, RAD_TO_DEG } from "../util.js";
-import { Bullet, BulletSpawnerTemplate, BulletTemplate } from "./bullet.js";
+import {
+    Bullet,
+    BulletSpawner,
+    BulletSpawnerTemplate,
+    BulletTemplate,
+} from "./bullet.js";
 import {
     cotton_bullets,
     david_bullets,
@@ -10,6 +15,13 @@ import {
 } from "../content/bullet_patterns.js";
 import { images } from "../content/resources.js";
 import { state } from "../state.js";
+import { Timer } from "../timer.js";
+
+const SPEED = {
+    david: 240,
+    trevor: 190,
+    cotton: 280,
+};
 
 const spawners = {
     david: new BulletSpawnerTemplate(david_bullets),
@@ -29,31 +41,74 @@ export class Player extends Entity {
     public layer = 15;
     public graze = 1;
 
-    public active = false;
-    public speed = 200;
+    public state: "inactive" | "active" | "respawning" = "inactive";
     public is_player = true;
     public motion: Motion = new Motion({
         angle: 0,
         speed: 0,
         parent: this,
     });
-    public colliding = false;
     public tilt = 0;
+    public opacity = 0;
+    public spawner?: BulletSpawner;
 
     constructor() {
         const size = 5;
-        super(WIDTH / 2, HEIGHT - 50, size);
+        super(GAME_WIDTH / 2, HEIGHT - 100, size);
+    }
+
+    get active() {
+        return this.state === "active";
     }
 
     activate() {
         if (!this.active) {
-            this.active = true;
-            spawners[state.character].spawn(bullet_template, this, 270);
+            this.state = "active";
+            this.spawner = spawners[state.character].spawn(
+                bullet_template,
+                this,
+                270
+            );
+        }
+    }
+
+    deactivate() {
+        if (this.state === "active") {
+            this.state = "inactive";
+            this.spawner?.destroy();
+        }
+    }
+
+    die() {
+        this.deactivate();
+
+        if (state.lives > 0) {
+            state.lives--;
+
+            new Timer(1000, () => {
+                this.x = GAME_WIDTH / 2;
+                this.y = HEIGHT - 100;
+                this.opacity = 0.05;
+                this.state = "respawning";
+            });
+
+            new Timer(4000, () => {
+                this.activate();
+            });
+        } else {
+            state.win = false;
+            state.advance("gameover");
         }
     }
 
     update(dt: number) {
         super.update(dt);
+
+        if (this.state === "inactive") {
+            this.motion.speed = 0;
+            this.tilt = 0;
+            return this;
+        }
 
         // movement
         const left = keyboard.has("a") || keyboard.has("arrowleft");
@@ -70,7 +125,7 @@ export class Player extends Entity {
         if (!x && !y) {
             this.motion.speed = 0;
         } else {
-            this.motion.speed = this.speed;
+            this.motion.speed = SPEED[state.character];
         }
 
         // tilt
@@ -86,39 +141,52 @@ export class Player extends Entity {
         }
 
         // collision
-        this.colliding = false;
-        for (const entity of Entity.entities) {
-            if (entity instanceof Bullet && entity.source === "enemy") {
-                if (this.collides(entity)) {
-                    this.colliding = true;
-                    break;
+        if (this.active) {
+            for (const entity of Entity.entities) {
+                if (entity instanceof Bullet && entity.source === "enemy") {
+                    if (this.collides(entity)) {
+                        this.die();
+                        break;
+                    }
                 }
             }
+        }
+
+        // fade in
+        if (this.opacity < 1) {
+            const speed = this.state === "respawning" ? 6000 : 800;
+            this.opacity = Math.min(1, this.opacity + dt / speed);
         }
 
         return this;
     }
 
     render(ctx: CanvasRenderingContext2D) {
-        if (this.active) {
-            ctx.rotated(this.x, this.y, this.tilt, () => {
-                ctx.drawImage(images[state.character], -30, -50);
-            });
-
-            ctx.fillStyle = this.colliding ? "#f00" : "#6ff";
-            ctx.strokeStyle = "#0aa";
-            ctx.lineWidth = 1;
-
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
-            ctx.filter = "blur(2px)";
-            ctx.fill();
-            ctx.filter = "none";
-            ctx.stroke();
+        if (this.state === "inactive") {
+            return;
         }
+
+        ctx.globalAlpha = this.opacity;
+
+        ctx.rotated(this.x, this.y, this.tilt, () => {
+            ctx.drawImage(images[state.character], -30, -50);
+        });
+
+        ctx.fillStyle = this.state === "respawning" ? "#fee" : "#6ff";
+        ctx.strokeStyle = "#0aa";
+        ctx.lineWidth = 1;
+
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+        ctx.filter = "blur(2px)";
+        ctx.fill();
+        ctx.filter = "none";
+        ctx.stroke();
+        ctx.globalAlpha = 1;
     }
 }
 
 export function initPlayer() {
     Entity.player = new Player();
+    (window as any).player = Entity.player;
 }

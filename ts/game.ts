@@ -1,12 +1,19 @@
 import { Entity } from "./entities/entity.js";
 import { initPlayer } from "./entities/player.js";
-import { canvas, ctx, wipeDecals } from "./interface.js";
+import { canvas, ctx, onKey, wipeDecals } from "./interface.js";
 import { delay, game_time, setGameTime, Timer } from "./timer.js";
 import * as scenes from "./content/scenes.js";
 import { state, StateMessage } from "./state.js";
-import { playMusic } from "./content/resources.js";
+import { fadeOutMusic, playMusic } from "./content/resources.js";
+import { useBomb } from "./bomb.js";
 
 ctx.textBaseline = "top";
+
+function wipeEntities() {
+    for (const entity of Entity.entities) {
+        entity.destroy();
+    }
+}
 
 function main(ts: number) {
     // initial frame delay
@@ -29,9 +36,6 @@ function main(ts: number) {
     ctx.fillStyle = "#fff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // menu
-    state.renderScene?.();
-
     // game loop
     for (const timer of Timer.timers) {
         timer.update();
@@ -49,30 +53,47 @@ function main(ts: number) {
         entity.render(ctx);
     }
 
+    state.renderScene?.();
+
     // next frame
     setGameTime(ts);
     requestAnimationFrame(main);
 }
 
 export async function initGame() {
-    initPlayer();
     requestAnimationFrame(main);
 
     // scenes.loading();
     scenes.stage1();
 }
 
+const game_scenes = ["stage1", "stage2", "stage3", "boss1", "boss2", "boss3"];
+
+onKey((key) => {
+    if ((key === "enter" || key === " ") && game_scenes.includes(state.scene)) {
+        useBomb();
+    }
+});
+
 state.advance = async (message: StateMessage) => {
     switch (message) {
-        case "loading->menu":
+        case "menu":
             await playMusic("menu");
             scenes.menu();
             break;
 
         case "menu->stage1":
-            await playMusic("stage1");
+            playMusic("stage1");
+            await delay(500);
             wipeDecals();
             scenes.stage1();
+            break;
+
+        case "gameover":
+            fadeOutMusic(0.2);
+            wipeEntities();
+            wipeDecals();
+            scenes.gameover();
             break;
     }
 };
