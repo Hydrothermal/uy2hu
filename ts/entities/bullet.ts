@@ -33,12 +33,6 @@ export class Bullet extends Entity {
             if (state.stop_bullets) {
                 this.destroy();
             }
-
-            if (Entity.player.active) {
-                setTimeout(() => {
-                    state.score++;
-                }, randRange(1, 50));
-            }
         }
 
         if (template.layer) {
@@ -75,6 +69,7 @@ export type SpawnPattern = {
     waves?: number;
     interval?: number;
     targeted?: true;
+    chance?: number;
 
     patterns?: SpawnPattern[];
     bullets?: {
@@ -158,6 +153,10 @@ export class BulletSpawner {
         const startAngle = pattern.startAngle || 0;
         const endAngle = pattern.endAngle || 0;
         const rays = pattern.rays || 1;
+
+        if (pattern.chance && randRange(0, 100) > pattern.chance) {
+            return;
+        }
 
         if (pattern.targeted) {
             facing = angleTo(origin, Entity.player);

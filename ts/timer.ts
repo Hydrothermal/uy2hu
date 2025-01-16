@@ -9,6 +9,7 @@ export class Timer {
     public start = game_time;
     public end: number;
     public iter = 0;
+    public resolve?: () => void;
 
     constructor(
         public delay: number,
@@ -23,6 +24,13 @@ export class Timer {
 
     destroy() {
         Timer.timers.delete(this);
+        this.resolve?.();
+    }
+
+    promise() {
+        return new Promise<void>((resolve, reject) => {
+            this.resolve = resolve;
+        });
     }
 
     update() {

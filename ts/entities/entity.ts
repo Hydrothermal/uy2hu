@@ -13,6 +13,7 @@ import type { Player } from "./player.js";
 export abstract class Entity {
     public layer = 10;
     public motion?: Motion;
+    public motion2?: Motion;
     public is_player = false;
     public graze = 0;
 
@@ -41,6 +42,7 @@ export abstract class Entity {
 
     refresh(dt: number) {
         this.motion?.apply(dt, this);
+        this.motion2?.apply(dt, this);
 
         if (this.is_player) {
             this.x = Math.min(

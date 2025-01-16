@@ -4,7 +4,7 @@ import { canvas, ctx, onKey, wipeDecals } from "./interface.js";
 import { delay, game_time, setGameTime, Timer } from "./timer.js";
 import * as scenes from "./content/scenes.js";
 import { state, StateMessage } from "./state.js";
-import { fadeOutMusic, playMusic } from "./content/resources.js";
+import { fadeOutMusic, playMusic, playSound } from "./content/resources.js";
 import { useBomb } from "./bomb.js";
 
 ctx.textBaseline = "top";
@@ -63,14 +63,12 @@ function main(ts: number) {
 export async function initGame() {
     requestAnimationFrame(main);
 
-    scenes.menu();
-    // scenes.stage1();
+    // scenes.menu();
+    scenes.stage1();
 }
 
-const game_scenes = ["stage1", "stage2", "stage3", "boss1", "boss2", "boss3"];
-
 onKey((key) => {
-    if ((key === "enter" || key === " ") && game_scenes.includes(state.scene)) {
+    if ((key === "enter" || key === " ") && state.inGame()) {
         useBomb();
     }
 });
@@ -97,6 +95,3 @@ state.advance = async (message: StateMessage) => {
             break;
     }
 };
-
-state.character = "cotton";
-state.scene = "stage1";

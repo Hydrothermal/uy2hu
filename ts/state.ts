@@ -1,12 +1,33 @@
+export const game_scenes = [
+    "stage1",
+    "stage2",
+    "stage3",
+    "boss1",
+    "boss2",
+    "boss3",
+];
+export const scenes = [
+    "loading",
+    "menu",
+    "stage1",
+    "stage2",
+    "stage3",
+    "boss1",
+    "boss2",
+    "boss3",
+    "gameover",
+] as const;
+export type Scene = (typeof scenes)[number];
 export type StateMessage = "menu" | "menu->stage1" | "gameover";
 
 export const state: {
     win: boolean;
-    scene: string;
+    scene: Scene;
     character: "david" | "trevor" | "cotton";
     difficulty: number;
     advance: (message: StateMessage) => void;
     renderScene?: () => void;
+    inGame: () => boolean;
 
     score: number;
     power: number;
@@ -20,6 +41,9 @@ export const state: {
     character: "david",
     difficulty: 1,
     advance: () => {},
+    inGame: () => {
+        return game_scenes.includes(state.scene);
+    },
 
     score: 0,
     power: 0,

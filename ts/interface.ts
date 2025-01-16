@@ -4,6 +4,7 @@ const $ = document.querySelector.bind(document);
 
 export const WIDTH = 600;
 export const GAME_WIDTH = 450;
+export const HALF = GAME_WIDTH / 2;
 export const HEIGHT = 800;
 export const canvas = $("#canvas") as HTMLCanvasElement;
 export const ctx = canvas.getContext("2d")!;

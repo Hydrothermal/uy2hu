@@ -1,5 +1,5 @@
 import { Motion } from "../motion.js";
-import { HEIGHT, keyboard, GAME_WIDTH } from "../interface.js";
+import { HEIGHT, keyboard, GAME_WIDTH, HALF } from "../interface.js";
 import { Entity } from "./entity.js";
 import { DEG_TO_RAD, RAD_TO_DEG } from "../util.js";
 import {
@@ -54,7 +54,7 @@ export class Player extends Entity {
 
     constructor() {
         const size = 5;
-        super(GAME_WIDTH / 2, HEIGHT - 100, size);
+        super(HALF, HEIGHT - 100, size);
     }
 
     get active() {
@@ -86,7 +86,7 @@ export class Player extends Entity {
             state.lives--;
 
             new Timer(1000, () => {
-                this.x = GAME_WIDTH / 2;
+                this.x = HALF;
                 this.y = HEIGHT - 100;
                 this.opacity = 0.05;
                 this.state = "respawning";

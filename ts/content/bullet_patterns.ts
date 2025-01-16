@@ -101,6 +101,13 @@ export const single: SpawnPattern = {
     bullets: [{ angle: 0 }],
 };
 
+export const triple: SpawnPattern = {
+    startAngle: -10,
+    endAngle: 10,
+    rays: 3,
+    bullets: [{ angle: 0 }],
+};
+
 export const chain_shot: SpawnPattern = {
     rays: 1,
     bullets: [
@@ -112,44 +119,37 @@ export const chain_shot: SpawnPattern = {
     ],
 };
 
-export const triangle_spread: SpawnPattern = {
+export const arrow_burst: SpawnPattern = {
     startAngle: 0,
     endAngle: 360,
     rays: 10,
     bullets: [
         {
             angle: -6,
-            size: 4,
             speed: 0.91,
         },
         {
             angle: -4,
-            size: 4,
             speed: 0.94,
         },
         {
             angle: -2,
-            size: 4,
             speed: 0.97,
         },
         {
             angle: 0,
-            size: 4,
             speed: 1,
         },
         {
             angle: 2,
-            size: 4,
             speed: 0.97,
         },
         {
             angle: 4,
-            size: 4,
             speed: 0.94,
         },
         {
             angle: 6,
-            size: 4,
             speed: 0.91,
         },
     ],

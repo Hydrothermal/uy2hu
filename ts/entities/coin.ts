@@ -53,8 +53,8 @@ export class Coin extends Entity {
         // pickup
         if (this.collides(Entity.player)) {
             state.score += 5;
-            state.power += 2;
-            playSound("coins");
+            state.power += 1;
+            playSound("coin");
             this.destroy();
         }
 

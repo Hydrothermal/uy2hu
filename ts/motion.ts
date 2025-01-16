@@ -24,8 +24,8 @@ export class Motion {
         }
     }
 
-    attach(parent: Entity) {
-        if (!parent.motion) {
+    attach(parent: Entity, override = false) {
+        if (!parent.motion || override) {
             parent.motion = this;
         }
 
@@ -34,6 +34,8 @@ export class Motion {
         if (this.target) {
             this.angle = angleTo(this.parent, this.target);
         }
+
+        return this;
     }
 
     apply(dt: number, entity: Entity) {
