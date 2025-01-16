@@ -21,6 +21,14 @@ export const images = {
     sara_face: new Image(),
     sara_face_2: new Image(),
 
+    // enemies
+    enemy_cube: new Image(),
+    enemy_goblin: new Image(),
+    enemy_goblin_wizard: new Image(),
+    enemy_golem: new Image(),
+    enemy_lizard: new Image(),
+    enemy_pixie: new Image(),
+
     coin: new Image(),
     fray: new Image(),
 };
@@ -35,15 +43,16 @@ export const bgm = {
     stage3: new Audio(),
 };
 
-export const sfx = {
-    good_job: new Audio(),
-    imposed: new Audio(),
-    click: new Audio(),
-    touch: new Audio(),
-    guh_dong: new Audio(),
-    bomb: new Audio(),
-    coins: new Audio(),
-    kill: new Audio(),
+const audioContext = new AudioContext();
+const sfx = {
+    good_job: null as AudioBuffer | null,
+    imposed: null as AudioBuffer | null,
+    click: null as AudioBuffer | null,
+    touch: null as AudioBuffer | null,
+    guh_dong: null as AudioBuffer | null,
+    bomb: null as AudioBuffer | null,
+    coin: null as AudioBuffer | null,
+    kill: null as AudioBuffer | null,
 };
 
 let playing_bgm: HTMLAudioElement | null = null;
@@ -55,29 +64,36 @@ function loadImage(name: keyof typeof images) {
     });
 }
 
-function loadAudio(
-    record: Record<string, HTMLAudioElement>,
-    path: string,
-    name: string
-) {
+function loadMusic(name: keyof typeof bgm) {
     return new Promise((resolve, reject) => {
-        record[name].src = `${path}/${name}.mp3`;
-        record[name].addEventListener("canplaythrough", resolve);
+        bgm[name].src = `bgm/${name}.mp3`;
+        bgm[name].addEventListener("canplaythrough", resolve);
     });
 }
 
+async function loadSfx(path: string, name: keyof typeof sfx) {
+    const response = await fetch(`${path}/${name}.mp3`);
+    const arrayBuffer = await response.arrayBuffer();
+    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+    sfx[name] = audioBuffer;
+}
+
 export async function playSound(name: keyof typeof sfx) {
-    sfx[name].currentTime = 0;
-    sfx[name].play();
+    if (sfx[name]) {
+        const source = audioContext.createBufferSource();
+        source.buffer = sfx[name];
+        source.connect(audioContext.destination);
+        source.start(0);
+    }
 }
 
 export async function fadeOutMusic(fade_speed = 0.1) {
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<void>((resolve) => {
         if (playing_bgm) {
             const audio = playing_bgm;
             const interval = setInterval(() => {
                 audio.volume = Math.max(0, audio.volume - fade_speed);
-
                 if (audio.volume === 0) {
                     resolve();
                     clearInterval(interval);
@@ -105,11 +121,11 @@ export async function initResources() {
     }
 
     for (const name in bgm) {
-        promises.push(loadAudio(bgm, "bgm", name));
+        promises.push(loadMusic(name as keyof typeof bgm));
     }
 
     for (const name in sfx) {
-        promises.push(loadAudio(sfx, "sfx", name));
+        promises.push(loadSfx("sfx", name as keyof typeof sfx));
     }
 
     await Promise.all(promises);
