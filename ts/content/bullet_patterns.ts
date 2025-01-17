@@ -107,10 +107,45 @@ export const single: SpawnPattern = {
     bullets: [{ angle: 0 }],
 };
 
+export const double: SpawnPattern = {
+    startAngle: -6,
+    endAngle: 6,
+    rays: 2,
+    bullets: [{ angle: 0 }],
+};
+
+export const double_wide: SpawnPattern = {
+    startAngle: -12,
+    endAngle: 12,
+    rays: 2,
+    bullets: [{ angle: 0 }],
+};
+
 export const triple: SpawnPattern = {
     startAngle: -10,
     endAngle: 10,
     rays: 3,
+    bullets: [{ angle: 0 }],
+};
+
+export const quad: SpawnPattern = {
+    startAngle: -12,
+    endAngle: 12,
+    rays: 4,
+    bullets: [{ angle: 0 }],
+};
+
+export const penta: SpawnPattern = {
+    startAngle: -18,
+    endAngle: 18,
+    rays: 5,
+    bullets: [{ angle: 0 }],
+};
+
+export const star: SpawnPattern = {
+    startAngle: 0,
+    endAngle: 360,
+    rays: 8,
     bullets: [{ angle: 0 }],
 };
 
@@ -122,6 +157,39 @@ export const chain_shot: SpawnPattern = {
         { angle: 0, speed: 1.2 },
         { angle: 0, speed: 1.3 },
         { angle: 0, speed: 1.4 },
+    ],
+};
+
+export const arrow: SpawnPattern = {
+    bullets: [
+        {
+            angle: -6,
+            speed: 0.91,
+        },
+        {
+            angle: -4,
+            speed: 0.94,
+        },
+        {
+            angle: -2,
+            speed: 0.97,
+        },
+        {
+            angle: 0,
+            speed: 1,
+        },
+        {
+            angle: 2,
+            speed: 0.97,
+        },
+        {
+            angle: 4,
+            speed: 0.94,
+        },
+        {
+            angle: 6,
+            speed: 0.91,
+        },
     ],
 };
 

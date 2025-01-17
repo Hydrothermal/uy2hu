@@ -2,6 +2,7 @@ import { Motion } from "../motion.js";
 import { state } from "../state.js";
 import { delay, Timer } from "../timer.js";
 import { Angle, angleTo, Point, Props, randRange } from "../util.js";
+import type { Enemy } from "./enemy.js";
 import { Entity } from "./entity.js";
 
 export class BulletTemplate {
@@ -100,6 +101,7 @@ export class BulletSpawnerTemplate {
 
 export class BulletSpawner {
     public timers: Timer[] = [];
+    public destroyed = false;
 
     constructor(
         public template: BulletSpawnerTemplate,
@@ -148,6 +150,10 @@ export class BulletSpawner {
         const startAngle = pattern.startAngle || 0;
         const endAngle = pattern.endAngle || 0;
         const rays = pattern.rays || 1;
+
+        if ((origin as Enemy).destroyed) {
+            this.destroy();
+        }
 
         if (pattern.chance && randRange(0, 100) > pattern.chance) {
             return;
@@ -213,6 +219,10 @@ export class BulletSpawner {
 
             if (pattern.delay) {
                 await delay(pattern.delay);
+
+                if (this.destroyed) {
+                    return;
+                }
             }
 
             this.spawnPattern(
@@ -233,6 +243,8 @@ export class BulletSpawner {
     }
 
     destroy() {
+        this.destroyed = true;
+
         for (const timer of this.timers) {
             timer.destroy();
         }

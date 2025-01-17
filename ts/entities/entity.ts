@@ -21,6 +21,7 @@ export abstract class Entity {
     public oob_right = true;
     public oob_top = true;
     public oob_bottom = true;
+    public destroyed = false;
 
     constructor(public x: number, public y: number, public size: number) {
         Entity.entities.add(this);
@@ -62,6 +63,7 @@ export abstract class Entity {
 
     destroy() {
         Entity.entities.delete(this);
+        this.destroyed = true;
     }
 
     update(dt: number) {

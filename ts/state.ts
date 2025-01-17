@@ -1,27 +1,25 @@
-export const game_scenes = [
-    "stage1",
-    "stage2",
-    "stage3",
-    "boss1",
-    "boss2",
-    "boss3",
-];
+export const game_scenes = ["stage1", "stage2", "stage3"];
 export const scenes = [
     "loading",
     "menu",
     "stage1",
     "stage2",
     "stage3",
-    "boss1",
-    "boss2",
-    "boss3",
     "gameover",
 ] as const;
 export type Scene = (typeof scenes)[number];
-export type StateMessage = "init" | "menu" | "menu->stage1" | "gameover";
+export type StateMessage =
+    | "init"
+    | "menu"
+    | "stage1"
+    | "stage2"
+    | "stage3"
+    | "bossdead"
+    | "gameover";
 
 export const state: {
     win: boolean;
+    running: boolean;
     scene: Scene;
     character: "david" | "trevor" | "cotton";
     difficulty: number;
@@ -40,6 +38,7 @@ export const state: {
     stop_bullets: boolean;
 } = {
     win: false,
+    running: false,
     scene: "loading",
     character: "david",
     difficulty: 1,

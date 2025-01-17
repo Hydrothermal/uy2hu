@@ -24,11 +24,21 @@ export const images = {
     // enemies
     enemy_goblin: new Image(),
     enemy_goblin_wizard: new Image(),
-    enemy_golem: new Image(),
     enemy_lizard: new Image(),
     enemy_pixie: new Image(),
+    enemy_shade: new Image(),
+    enemy_mummy: new Image(),
+    enemy_frog: new Image(),
+    enemy_frog_harry: new Image(),
+    enemy_topfrog: new Image(),
+
+    // bosses
     enemy_cube: new Image(),
     enemy_cube_2: new Image(),
+    enemy_golem: new Image(),
+    enemy_golem_2: new Image(),
+    enemy_harry: new Image(),
+    enemy_harry_2: new Image(),
 
     pop: new Image(),
     coin: new Image(),
@@ -59,6 +69,7 @@ const sfx = {
     kill: null as AudioBuffer | null,
     respawn: null as AudioBuffer | null,
     death: null as AudioBuffer | null,
+    oneup: null as AudioBuffer | null,
 };
 
 let playing_bgm: HTMLAudioElement | null = null;

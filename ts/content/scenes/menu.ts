@@ -8,12 +8,8 @@ const DIFF_SELECT_Y = CHAR_SELECT_Y + 240;
 const START_BUTTON_Y = DIFF_SELECT_Y + 150;
 
 const menu_cols = [4, 3, 3];
-// const menu_selections: number[] = [];
-// let menu_cursor = { row: 0, col: 0 };
-
-// auto select
-const menu_selections: number[] = [0, 0];
-let menu_cursor = { row: 2, col: 0 };
+const menu_selections: number[] = [];
+let menu_cursor = { row: 0, col: 0 };
 
 let no_sara = false;
 let disabled = false;
@@ -65,7 +61,7 @@ function menuSelect() {
             playSound("imposed");
         } else {
             playSound("guh_dong");
-            state.advance("menu->stage1");
+            state.advance("stage1");
             disabled = true;
         }
 
@@ -150,16 +146,16 @@ function render() {
     drawDifficulty(
         s_difficulty === 0 ? "#080" : "#444",
         "apprentice",
-        "easy",
+        "normal",
         125
     );
+    drawDifficulty(s_difficulty === 1 ? "#b50" : "#444", "mercy", "hard", 300);
     drawDifficulty(
-        s_difficulty === 1 ? "#b50" : "#444",
-        "mercy",
-        "medium",
-        300
+        s_difficulty === 2 ? "#a00" : "#444",
+        "harry",
+        "extreme",
+        475
     );
-    drawDifficulty(s_difficulty === 2 ? "#a00" : "#444", "harry", "hard", 475);
 
     // start button
     if (s_char === undefined || s_difficulty === undefined) {

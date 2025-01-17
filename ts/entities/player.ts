@@ -55,6 +55,7 @@ export class Player extends Entity {
     constructor() {
         const size = 5;
         super(HALF, HEIGHT - 100, size);
+        this.activate();
     }
 
     get active() {
@@ -64,6 +65,8 @@ export class Player extends Entity {
     activate() {
         if (!this.active) {
             this.state = "active";
+
+            // create bullet spawner
             this.spawner = spawners[state.character].spawn(
                 bullet_template,
                 this,

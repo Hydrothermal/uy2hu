@@ -1,4 +1,4 @@
-import { Entity } from "./entities/entity.js";
+import { Entity, wipeEntities } from "./entities/entity.js";
 import { initPlayer } from "./entities/player.js";
 import { canvas, ctx, onKey, wipeDecals } from "./interface.js";
 import { delay, game_time, setGameTime, Timer } from "./timer.js";
@@ -67,9 +67,7 @@ function main(ts: number) {
 export async function initGame() {
     requestAnimationFrame(main);
 
-    // scenes.menu();
-    scenes.stage1();
-    // scenes.gameover();
+    scenes.loading();
 }
 
 onKey((key) => {
@@ -81,31 +79,55 @@ onKey((key) => {
 state.advance = async (message: StateMessage) => {
     switch (message) {
         case "menu":
+            state.running = false;
             await playMusic("menu");
             scenes.menu();
             break;
 
         case "init":
-            Entity.player.activate();
+            if (!state.running) {
+                state.running = true;
+                initPlayer();
 
-            if (state.difficulty === 1) {
-                Entity.player.graze = 1.5;
-            } else {
-                Entity.player.graze = 1;
+                if (state.difficulty === 1) {
+                    Entity.player.graze = 1.5;
+                } else {
+                    Entity.player.graze = 1;
+                }
+
+                state.playtime = 0;
+                state.score = 0;
+                state.power = 35 - state.difficulty * 10;
+                state.bombs = state.difficulty === 3 ? 2 : 3;
+                state.lives = 4 - state.difficulty;
             }
-
-            state.playtime = 0;
-            state.score = 0;
-            state.power = 35 - state.difficulty * 10;
-            state.bombs = state.difficulty === 3 ? 2 : 3;
-            state.lives = 4 - state.difficulty;
             break;
 
-        case "menu->stage1":
+        case "stage1":
             playMusic("stage1");
             await delay(500);
             wipeDecals();
             scenes.stage1();
+            break;
+
+        case "stage2":
+            playMusic("stage2");
+            await delay(500);
+            wipeDecals();
+            scenes.stage2();
+            break;
+
+        case "stage3":
+            playMusic("stage3");
+            await delay(500);
+            wipeDecals();
+            scenes.stage3();
+            break;
+
+        case "bossdead":
+            fadeOutMusic(0.1);
+            playSound("oneup");
+            state.lives++;
             break;
 
         case "gameover":
@@ -114,7 +136,7 @@ state.advance = async (message: StateMessage) => {
     }
 };
 
-state.difficulty = 2;
-state.character = "david";
+// state.difficulty = 2;
+// state.character = "david";
 // state.invincible = true;
 // state.dmg_boost = true;

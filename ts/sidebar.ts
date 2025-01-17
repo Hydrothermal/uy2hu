@@ -11,7 +11,7 @@ const SCORE_Y = 10;
 const TIMER_Y = SCORE_Y + 80;
 const POWER_Y = TIMER_Y + 80;
 const BOMBS_Y = POWER_Y + 80;
-const LIVES_Y = BOMBS_Y + 160;
+const LIVES_Y = BOMBS_Y + 230;
 
 export function renderSidebar() {
     ctx.drawImage(images.sidebar, GAME_WIDTH - 6, 0);
@@ -33,7 +33,7 @@ export function renderSidebar() {
     ctx.textAlign = "left";
     ctx.fillText("score", LEFT, SCORE_Y);
     ctx.fillText("time", LEFT, TIMER_Y);
-    ctx.fillText("power", LEFT, POWER_Y);
+    ctx.fillText("next bomb", LEFT, POWER_Y);
     ctx.fillText("bombs", LEFT, BOMBS_Y);
     ctx.fillText("lives", LEFT, LIVES_Y);
 

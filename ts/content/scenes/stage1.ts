@@ -131,11 +131,8 @@ function lizard_trio(y: number, dir: string) {
 }
 
 export async function stage1() {
-    initPlayer();
     state.scene = "stage1";
     state.renderScene = renderSidebar;
-
-    // initialize gameplay
     state.advance("init");
 
     await delay(2000);
@@ -202,7 +199,7 @@ export async function stage1() {
 
     for (let i = 0; i < 4; i++) {
         new Enemy(
-            enemies.goblin_wizard_triple,
+            enemies.goblin_wizard,
             90 + 90 * i,
             -30,
             new Behavior(descend)
@@ -214,7 +211,7 @@ export async function stage1() {
     for (let i = 0; i < 5; i++) {
         new Timer(500 * i, () => {
             new Enemy(
-                enemies.goblin_wizard_triple,
+                enemies.goblin_wizard,
                 75 + 75 * i,
                 -30,
                 new Behavior(descend)
@@ -222,6 +219,7 @@ export async function stage1() {
         });
     }
 
+    await delay(600);
     await noEnemies();
 
     new Timer(
@@ -254,7 +252,7 @@ export async function stage1() {
         1200,
         () => {
             new Enemy(
-                enemies.goblin_wizard_triple,
+                enemies.goblin_wizard,
                 HALF,
                 -20,
                 new Behavior(scatter_descend)
@@ -295,7 +293,7 @@ export async function stage1() {
         500,
         () => {
             new Enemy(
-                enemies.goblin_wizard_triple,
+                enemies.goblin_wizard,
                 -20,
                 50,
                 new Behavior(swing_from_left)
@@ -304,6 +302,7 @@ export async function stage1() {
         10
     );
 
+    await delay(500);
     await noEnemies(500);
 
     lizard_trio(60, "right");
@@ -337,4 +336,9 @@ export async function stage1() {
             }
         })
     );
+
+    await noEnemies();
+    state.advance("bossdead");
+    await delay(2000);
+    state.advance("stage2");
 }

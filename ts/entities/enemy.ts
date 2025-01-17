@@ -146,10 +146,6 @@ export class Enemy extends Entity {
     }
 
     render(ctx: CanvasRenderingContext2D) {
-        ctx.fillStyle = "#ddd";
-        ctx.strokeStyle = "#000";
-        ctx.lineWidth = 2;
-
         ctx.rotated(this.x, this.y, this.tilt, () => {
             ctx.scale(this.scale, this.scale);
 
@@ -157,7 +153,13 @@ export class Enemy extends Entity {
                 ctx.scale(-1, 1);
             }
 
-            ctx.drawCentered(images[this.img], 0, 0);
+            let y = 0;
+
+            if (this.img === "enemy_harry" || this.img === "enemy_harry_2") {
+                y = -50;
+            }
+
+            ctx.drawCentered(images[this.img], 0, y);
 
             if (this.flip) {
                 ctx.scale(-1, 1);
