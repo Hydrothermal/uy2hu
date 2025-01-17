@@ -86,6 +86,13 @@ state.advance = async (message: StateMessage) => {
 
         case "init":
             Entity.player.activate();
+
+            if (state.difficulty === 1) {
+                Entity.player.graze = 1.5;
+            } else {
+                Entity.player.graze = 1;
+            }
+
             state.playtime = 0;
             state.power = 35 - state.difficulty * 10;
             state.bombs = state.difficulty === 3 ? 2 : 3;

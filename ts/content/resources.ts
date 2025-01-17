@@ -42,6 +42,8 @@ export const bgm = {
     stage1: new Audio(),
     stage2: new Audio(),
     stage3: new Audio(),
+    win: new Audio(),
+    lose: new Audio(),
 };
 
 const audioContext = new AudioContext();
@@ -54,6 +56,8 @@ const sfx = {
     bomb: null as AudioBuffer | null,
     coin: null as AudioBuffer | null,
     kill: null as AudioBuffer | null,
+    respawn: null as AudioBuffer | null,
+    death: null as AudioBuffer | null,
 };
 
 let playing_bgm: HTMLAudioElement | null = null;

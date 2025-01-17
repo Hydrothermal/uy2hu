@@ -319,7 +319,7 @@ export async function stage1() {
 
     await noEnemies(600);
     playMusic("boss1");
-    await delay(600);
+    await delay(1000);
 
     new Enemy(
         enemies.cube,

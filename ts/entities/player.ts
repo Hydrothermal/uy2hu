@@ -13,7 +13,7 @@ import {
     david_bullets,
     trevor_bullets,
 } from "../content/bullet_patterns.js";
-import { images } from "../content/resources.js";
+import { images, playSound } from "../content/resources.js";
 import { state } from "../state.js";
 import { Timer } from "../timer.js";
 
@@ -81,6 +81,7 @@ export class Player extends Entity {
 
     die() {
         this.deactivate();
+        playSound("death");
 
         if (state.lives > 0) {
             state.lives--;
@@ -90,6 +91,7 @@ export class Player extends Entity {
                 this.y = HEIGHT - 100;
                 this.opacity = 0.05;
                 this.state = "respawning";
+                playSound("respawn");
             });
 
             new Timer(4000, () => {
