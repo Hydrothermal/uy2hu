@@ -66,11 +66,7 @@ export async function stage1() {
     state.renderScene = renderSidebar;
 
     // initialize gameplay
-    Entity.player.activate();
-
-    state.power = 35 - state.difficulty * 10;
-    state.bombs = state.difficulty === 3 ? 2 : 3;
-    state.lives = 4 - state.difficulty;
+    state.advance("init");
 
     // await delay(2000);
 

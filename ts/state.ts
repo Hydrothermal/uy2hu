@@ -18,7 +18,7 @@ export const scenes = [
     "gameover",
 ] as const;
 export type Scene = (typeof scenes)[number];
-export type StateMessage = "menu" | "menu->stage1" | "gameover";
+export type StateMessage = "init" | "menu" | "menu->stage1" | "gameover";
 
 export const state: {
     win: boolean;
@@ -29,6 +29,7 @@ export const state: {
     renderScene?: () => void;
     inGame: () => boolean;
 
+    playtime: number;
     score: number;
     power: number;
     bombs: number;
@@ -45,6 +46,7 @@ export const state: {
         return game_scenes.includes(state.scene);
     },
 
+    playtime: 0,
     score: 0,
     power: 0,
     bombs: 0,

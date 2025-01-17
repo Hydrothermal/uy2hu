@@ -6,7 +6,8 @@ const WIDTH = FULL_WIDTH - GAME_WIDTH;
 const LEFT = GAME_WIDTH + 7;
 
 const SCORE_Y = 10;
-const POWER_Y = SCORE_Y + 110;
+const TIMER_Y = SCORE_Y + 110;
+const POWER_Y = TIMER_Y + 110;
 const BOMBS_Y = POWER_Y + 110;
 const LIVES_Y = BOMBS_Y + 140;
 
@@ -26,12 +27,17 @@ export function renderSidebar() {
     ctx.fillStyle = "#000";
     ctx.textAlign = "left";
     ctx.fillText("score", LEFT, SCORE_Y);
+    ctx.fillText("time", LEFT, TIMER_Y);
     ctx.fillText("power", LEFT, POWER_Y);
     ctx.fillText("bombs", LEFT, BOMBS_Y);
     ctx.fillText("lives", LEFT, LIVES_Y);
 
     ctx.font = "20px 'Comic Sans MS'";
     ctx.fillText(state.score.toString(), LEFT, SCORE_Y + 35);
+
+    const time = (state.playtime / 1000).toFixed(2);
+    ctx.fillText(`${time}s`, LEFT, TIMER_Y + 35);
+
     ctx.fillText(`${state.power}%`, LEFT, POWER_Y + 35);
 
     // bombs

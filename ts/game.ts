@@ -37,6 +37,10 @@ function main(ts: number) {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // game loop
+    if (state.inGame()) {
+        state.playtime += dt;
+    }
+
     for (const timer of Timer.timers) {
         timer.update();
     }
@@ -78,6 +82,14 @@ state.advance = async (message: StateMessage) => {
         case "menu":
             await playMusic("menu");
             scenes.menu();
+            break;
+
+        case "init":
+            Entity.player.activate();
+            state.playtime = 0;
+            state.power = 35 - state.difficulty * 10;
+            state.bombs = state.difficulty === 3 ? 2 : 3;
+            state.lives = 4 - state.difficulty;
             break;
 
         case "menu->stage1":
