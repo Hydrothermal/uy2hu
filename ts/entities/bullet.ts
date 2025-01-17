@@ -1,6 +1,6 @@
 import { Motion } from "../motion.js";
 import { state } from "../state.js";
-import { Timer } from "../timer.js";
+import { delay, Timer } from "../timer.js";
 import { Angle, angleTo, Point, Props, randRange } from "../util.js";
 import { Entity } from "./entity.js";
 
@@ -70,6 +70,8 @@ export type SpawnPattern = {
     interval?: number;
     targeted?: true;
     chance?: number;
+    delay?: number;
+    min_difficulty?: number;
 
     patterns?: SpawnPattern[];
     bullets?: {
@@ -97,7 +99,7 @@ export class BulletSpawnerTemplate {
 }
 
 export class BulletSpawner {
-    public timers: WeakRef<Timer>[] = [];
+    public timers: Timer[] = [];
 
     constructor(
         public template: BulletSpawnerTemplate,
@@ -113,6 +115,8 @@ export class BulletSpawner {
         speed: number,
         drift = 0
     ) {
+        this.spawnPatternWave(pattern, template, origin, facing, speed, drift);
+
         if (pattern.waves && pattern.interval) {
             const timer = new Timer(
                 pattern.interval,
@@ -126,19 +130,10 @@ export class BulletSpawner {
                         drift
                     );
                 },
-                pattern.waves
+                pattern.waves - 1
             );
 
-            this.timers.push(new WeakRef(timer));
-        } else {
-            this.spawnPatternWave(
-                pattern,
-                template,
-                origin,
-                facing,
-                speed,
-                drift
-            );
+            this.timers.push(timer);
         }
     }
 
@@ -208,7 +203,18 @@ export class BulletSpawner {
     }
 
     spawn(bullet_template: BulletTemplate, drift = 0) {
-        for (const pattern of this.template.patterns) {
+        const spawn = async (pattern: SpawnPattern) => {
+            if (
+                pattern.min_difficulty &&
+                state.difficulty < pattern.min_difficulty
+            ) {
+                return;
+            }
+
+            if (pattern.delay) {
+                await delay(pattern.delay);
+            }
+
             this.spawnPattern(
                 pattern,
                 bullet_template,
@@ -217,6 +223,10 @@ export class BulletSpawner {
                 pattern.speed || 0,
                 drift
             );
+        };
+
+        for (const pattern of this.template.patterns) {
+            spawn(pattern);
         }
 
         return this;
@@ -224,7 +234,7 @@ export class BulletSpawner {
 
     destroy() {
         for (const timer of this.timers) {
-            timer.deref()?.destroy();
+            timer.destroy();
         }
     }
 }

@@ -1,4 +1,6 @@
 import { images } from "./content/resources.js";
+import { Enemy } from "./entities/enemy.js";
+import { Entity } from "./entities/entity.js";
 import { ctx, GAME_WIDTH, WIDTH as FULL_WIDTH, HEIGHT } from "./interface.js";
 import { state } from "./state.js";
 
@@ -12,15 +14,18 @@ const BOMBS_Y = POWER_Y + 110;
 const LIVES_Y = BOMBS_Y + 140;
 
 export function renderSidebar() {
-    // border
-    // ctx.strokeStyle = "#000";
-    // ctx.lineWidth = 1;
-    // ctx.beginPath();
-    // ctx.moveTo(GAME_WIDTH, 0);
-    // ctx.lineTo(GAME_WIDTH, HEIGHT);
-    // ctx.stroke();
-    // ctx.translate(-0.5, -0.5);
     ctx.drawImage(images.sidebar, GAME_WIDTH - 6, 0);
+
+    // boss hp
+    const boss = Array.from(Entity.entities).find(
+        (e) => e instanceof Enemy && e.template.boss
+    ) as Enemy;
+
+    if (boss) {
+        const frac = boss.hp / boss.maxhp;
+        ctx.fillStyle = boss.phase2 ? "#f00" : "#c39";
+        ctx.fillRect(0, 0, GAME_WIDTH * frac, 8);
+    }
 
     // headers
     ctx.font = "bold 28px 'Comic Sans MS'";

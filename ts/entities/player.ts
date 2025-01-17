@@ -141,7 +141,7 @@ export class Player extends Entity {
         }
 
         // collision
-        if (this.active) {
+        if (this.active && !state.invincible) {
             for (const entity of Entity.entities) {
                 if (entity instanceof Bullet && entity.source === "enemy") {
                     if (this.collides(entity)) {

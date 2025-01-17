@@ -9,7 +9,7 @@ export class Coin extends Entity {
     public layer = 25;
     public oob_top = false;
     public motion = new Motion({
-        angle: randRange(-20, 20) - 90,
+        angle: randRange(-8, 8) - 90,
         speed: randRange(150, 200),
         minspeed: 0,
         acceleration: -5,
@@ -37,7 +37,7 @@ export class Coin extends Entity {
         super.update(dt);
         this.gravity.apply(dt, this);
 
-        const homing_distance = 70 - state.difficulty * 10;
+        const homing_distance = 100 - state.difficulty * 15;
 
         if (distanceTo(this, Entity.player) < homing_distance) {
             this.homing.apply(dt, this);

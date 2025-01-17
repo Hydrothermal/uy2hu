@@ -85,6 +85,12 @@ export const cotton_bullets: SpawnPattern[] = [
         speed: 600,
         patterns: [
             {
+                startAngle: -1,
+                endAngle: 1,
+                rays: 2,
+                bullets: [{ size: 1 }],
+            },
+            {
                 bullets: [
                     { angle: -1, size: 2, offset: -8, speed: 1.2 },
                     { size: 2, offset: -3 },

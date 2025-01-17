@@ -35,6 +35,8 @@ export const state: {
     bombs: number;
     lives: number;
 
+    invincible: boolean;
+    dmg_boost: boolean;
     stop_bullets: boolean;
 } = {
     win: false,
@@ -52,5 +54,7 @@ export const state: {
     bombs: 0,
     lives: 0,
 
+    invincible: false,
+    dmg_boost: false,
     stop_bullets: false,
 };

@@ -22,12 +22,13 @@ export const images = {
     sara_face_2: new Image(),
 
     // enemies
-    enemy_cube: new Image(),
     enemy_goblin: new Image(),
     enemy_goblin_wizard: new Image(),
     enemy_golem: new Image(),
     enemy_lizard: new Image(),
     enemy_pixie: new Image(),
+    enemy_cube: new Image(),
+    enemy_cube_2: new Image(),
 
     coin: new Image(),
     fray: new Image(),

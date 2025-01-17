@@ -19,7 +19,7 @@ function render() {
     const time_score = Math.floor(state.playtime / 1000);
     ctx.fillText(`time penalty: -${time_score}`, WIDTH / 2, 440);
 
-    const lives_score = state.lives * 100;
+    const lives_score = state.lives * 1000;
     ctx.fillText(`life bonus: +${lives_score}`, WIDTH / 2, 480);
 
     ctx.font = "bold 40px 'Comic Sans MS'";

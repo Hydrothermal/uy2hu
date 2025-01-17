@@ -67,8 +67,8 @@ function main(ts: number) {
 export async function initGame() {
     requestAnimationFrame(main);
 
-    // scenes.menu();
-    scenes.stage1();
+    scenes.menu();
+    // scenes.stage1();
 }
 
 onKey((key) => {
@@ -107,3 +107,8 @@ state.advance = async (message: StateMessage) => {
             break;
     }
 };
+
+state.difficulty = 2;
+state.character = "david";
+// state.invincible = true;
+// state.dmg_boost = true;

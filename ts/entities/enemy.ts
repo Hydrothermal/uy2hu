@@ -14,13 +14,14 @@ import { Coin } from "./coin.js";
 import { Entity } from "./entity.js";
 
 export class EnemyTemplate {
+    public boss = false;
     public hp = 0;
     public size = 15;
     public img: keyof typeof images = "card";
-    public bullets?: {
+    public bullets: {
         template: BulletTemplate;
         spawner: BulletSpawnerTemplate;
-    };
+    }[] = [];
 
     constructor(options: Partial<Props<EnemyTemplate>>) {
         Object.assign(this, options);
@@ -31,11 +32,13 @@ export class Enemy extends Entity {
     public layer = 30;
     public maxhp = 0;
     public hp = 0;
-    public bullet_spawner?: BulletSpawner;
+    public bullet_spawners: BulletSpawner[] = [];
     public flip = false;
     public tilt = 0;
     public aim_facing = 90;
     public scale = 1;
+    public phase2 = false;
+    public img: EnemyTemplate["img"];
 
     constructor(
         public template: EnemyTemplate,
@@ -48,22 +51,22 @@ export class Enemy extends Entity {
         behavior.attach(this);
         Object.assign(this, options);
 
-        this.hp = this.maxhp = template.hp;
+        const hp_scale = 1 + (state.difficulty - 1) / 20;
+        this.hp = this.maxhp = Math.floor(template.hp * hp_scale);
+        this.img = this.template.img;
 
-        const bullets = this.template.bullets;
-        if (bullets) {
-            this.bullet_spawner = bullets.spawner.spawn(
-                bullets.template,
-                this,
-                this.aim_facing
-            );
+        for (const bullets of this.template.bullets) {
+            this.addSpawner(bullets.template, bullets.spawner);
         }
     }
 
     destroy() {
         super.destroy();
         this.behavior.destroy();
-        this.bullet_spawner?.destroy();
+
+        for (const spawner of this.bullet_spawners) {
+            spawner.destroy();
+        }
     }
 
     die() {
@@ -72,11 +75,16 @@ export class Enemy extends Entity {
 
         let coins = randRange(
             Math.floor(this.maxhp / 160),
-            Math.floor(this.maxhp / 100)
+            Math.floor(this.maxhp / 100) + 1
         );
 
         if (this.maxhp >= 200) {
             coins++;
+        }
+
+        if (this.template.boss) {
+            coins = Math.floor(coins / 2);
+            state.power += 10;
         }
 
         for (let i = 0; i < coins; i++) {
@@ -87,9 +95,14 @@ export class Enemy extends Entity {
         this.destroy();
     }
 
+    addSpawner(bullet: BulletTemplate, spawner: BulletSpawnerTemplate) {
+        this.bullet_spawners.push(spawner.spawn(bullet, this, this.aim_facing));
+    }
+
     update(dt: number) {
         const { x } = this;
         super.update(dt);
+        this.behavior.update?.(dt, this);
 
         const dx = this.x - x;
         const max_tilt = 15;
@@ -116,7 +129,7 @@ export class Enemy extends Entity {
             if (entity instanceof Bullet && entity.source === "player") {
                 if (this.collides(entity)) {
                     entity.destroy();
-                    this.hp -= entity.size;
+                    this.hp -= entity.size * (state.dmg_boost ? 5 : 1);
                     this.scale = Math.max(0.9, this.scale - 0.04);
                     break;
                 }
@@ -135,11 +148,6 @@ export class Enemy extends Entity {
         ctx.strokeStyle = "#000";
         ctx.lineWidth = 2;
 
-        // ctx.beginPath();
-        // ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
-        // ctx.fill();
-        // ctx.stroke();
-
         ctx.rotated(this.x, this.y, this.tilt, () => {
             ctx.scale(this.scale, this.scale);
 
@@ -147,7 +155,7 @@ export class Enemy extends Entity {
                 ctx.scale(-1, 1);
             }
 
-            ctx.drawCentered(images[this.template.img], 0, 0);
+            ctx.drawCentered(images[this.img], 0, 0);
 
             if (this.flip) {
                 ctx.scale(-1, 1);
