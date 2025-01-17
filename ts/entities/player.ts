@@ -1,5 +1,5 @@
 import { Motion } from "../motion.js";
-import { HEIGHT, keyboard, GAME_WIDTH, HALF } from "../interface.js";
+import { HEIGHT, keyboard, GAME_WIDTH, HALF, addDecal } from "../interface.js";
 import { Entity } from "./entity.js";
 import { DEG_TO_RAD, RAD_TO_DEG } from "../util.js";
 import {
@@ -82,6 +82,7 @@ export class Player extends Entity {
     die() {
         this.deactivate();
         playSound("death");
+        addDecal("pop", this.x - 30, this.y - 30);
 
         if (state.lives > 0) {
             state.lives--;

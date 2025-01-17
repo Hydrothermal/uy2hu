@@ -27,6 +27,11 @@
                 background-color: #000;
             }
 
+            .preload {
+                position: fixed;
+                left: -1000vw;
+            }
+
             #decals {
                 z-index: 2;
                 height: 800px;
@@ -66,11 +71,30 @@
                 opacity: 0;
                 animation: fray 1500ms ease;
             }
+
+            @keyframes pop {
+                0% {
+                    opacity: 1;
+                    transform: scale(0.6);
+                }
+
+                100% {
+                    opacity: 0;
+                    transform: scale(1);
+                }
+            }
+
+            #decals .pop {
+                opacity: 0;
+                animation: pop 300ms ease;
+            }
         </style>
     </head>
     <body>
         <canvas id="canvas"></canvas>
         <div id="decals"></div>
         <script src="js/index.js" type="module"></script>
+
+        <img src="img/fray.png" class="preload" />
     </body>
 </html>

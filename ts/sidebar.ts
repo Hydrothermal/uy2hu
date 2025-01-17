@@ -8,10 +8,10 @@ const WIDTH = FULL_WIDTH - GAME_WIDTH;
 const LEFT = GAME_WIDTH + 7;
 
 const SCORE_Y = 10;
-const TIMER_Y = SCORE_Y + 110;
-const POWER_Y = TIMER_Y + 110;
-const BOMBS_Y = POWER_Y + 110;
-const LIVES_Y = BOMBS_Y + 140;
+const TIMER_Y = SCORE_Y + 80;
+const POWER_Y = TIMER_Y + 80;
+const BOMBS_Y = POWER_Y + 80;
+const LIVES_Y = BOMBS_Y + 160;
 
 export function renderSidebar() {
     ctx.drawImage(images.sidebar, GAME_WIDTH - 6, 0);
@@ -47,7 +47,10 @@ export function renderSidebar() {
 
     // bombs
     for (let i = 0; i < state.bombs; i++) {
-        ctx.drawImage(images.card, LEFT + 48 * i, BOMBS_Y + 30);
+        const x = 48 * (i % 3);
+        const y = Math.floor(i / 3) * 60;
+
+        ctx.drawImage(images.card, LEFT + x, BOMBS_Y + 30 + y);
     }
 
     // lives

@@ -1,5 +1,6 @@
 import type { Behavior } from "../behavior.js";
 import { images, playSound } from "../content/resources.js";
+import { addDecal } from "../interface.js";
 import { Motion } from "../motion.js";
 import { state } from "../state.js";
 import { Timer } from "../timer.js";
@@ -70,6 +71,7 @@ export class Enemy extends Entity {
     }
 
     die() {
+        addDecal("pop", this.x - 30, this.y - 30);
         state.score += Math.floor(this.maxhp / 2);
         state.power += 2;
 

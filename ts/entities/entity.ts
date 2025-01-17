@@ -72,4 +72,10 @@ export abstract class Entity {
     abstract render(ctx: CanvasRenderingContext2D): void;
 }
 
+export function wipeEntities() {
+    for (const entity of Entity.entities) {
+        entity.destroy();
+    }
+}
+
 (window as any).entities = Entity.entities;

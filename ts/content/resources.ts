@@ -30,6 +30,7 @@ export const images = {
     enemy_cube: new Image(),
     enemy_cube_2: new Image(),
 
+    pop: new Image(),
     coin: new Image(),
     fray: new Image(),
 };

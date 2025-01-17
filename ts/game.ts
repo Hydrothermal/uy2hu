@@ -9,12 +9,6 @@ import { useBomb } from "./bomb.js";
 
 ctx.textBaseline = "top";
 
-function wipeEntities() {
-    for (const entity of Entity.entities) {
-        entity.destroy();
-    }
-}
-
 function main(ts: number) {
     // initial frame delay
     if (game_time === 0) {
@@ -39,6 +33,12 @@ function main(ts: number) {
     // game loop
     if (state.inGame()) {
         state.playtime += dt;
+
+        if (state.power >= 100) {
+            state.power -= 100;
+            state.bombs++;
+            playSound("good_job");
+        }
     }
 
     for (const timer of Timer.timers) {
@@ -67,8 +67,9 @@ function main(ts: number) {
 export async function initGame() {
     requestAnimationFrame(main);
 
-    scenes.menu();
-    // scenes.stage1();
+    // scenes.menu();
+    scenes.stage1();
+    // scenes.gameover();
 }
 
 onKey((key) => {
@@ -94,6 +95,7 @@ state.advance = async (message: StateMessage) => {
             }
 
             state.playtime = 0;
+            state.score = 0;
             state.power = 35 - state.difficulty * 10;
             state.bombs = state.difficulty === 3 ? 2 : 3;
             state.lives = 4 - state.difficulty;
@@ -107,9 +109,6 @@ state.advance = async (message: StateMessage) => {
             break;
 
         case "gameover":
-            fadeOutMusic(0.2);
-            wipeEntities();
-            wipeDecals();
             scenes.gameover();
             break;
     }
